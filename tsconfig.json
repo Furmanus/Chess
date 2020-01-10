@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "outDir": "./dist",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "module": "esnext",
+    "target": "es5",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "lib": ["es5", "dom", "esnext"],
+    "jsx": "react",
+    "typeRoots": ["./common/typings", "./node_modules/@types"]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
