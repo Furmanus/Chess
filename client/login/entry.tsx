@@ -1,5 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {Root} from './containers/Root';
+import {LoginRoot} from './containers/LoginRoot';
 
-ReactDOM.render(<Root/>, document.getElementById('app'));
+ReactDOM.render(<LoginRoot/>, document.getElementById('app'));

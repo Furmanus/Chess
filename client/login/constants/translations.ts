@@ -12,6 +12,14 @@ const englishTranslations = {
         repeatPasswordInputLabel: 'Repeat Password',
         submitButtonText: 'sign in',
         submitRegisterButtonText: 'sign up',
+        errors: {
+            internalServerError: 'Unexpected server error, please try again later',
+            registerUserAlreadyExists: 'User already exists',
+            registerPasswordsDontMatch: 'Repeated password is not same as password',
+            loginUserNotFound: 'Wrong user name or password',
+            loginWrongPassword: 'Wrong user name or password',
+            fieldsNotFilled: 'Please fill all fields',
+        },
     },
     links: {
         retrievePasswordText: 'Forgot password?',

@@ -25,13 +25,20 @@ module.exports = env => {
             template: path.resolve(__dirname, 'server', 'templates', 'login.pug'),
             chunks: ['login'],
             filetype: 'pug',
-            filename: path.resolve(__dirname, 'build', 'views', 'login.pug'),
+            filename: path.resolve(__dirname, 'build', 'server', 'views', 'login.pug'),
+        }),
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, 'server', 'templates', 'app.pug'),
+            chunks: ['app'],
+            filetype: 'pug',
+            filename: path.resolve(__dirname, 'build', 'server', 'views', 'app.pug'),
         }),
     ];
 
     return {
         entry: {
             login: path.resolve(__dirname, 'client', 'login', 'entry.tsx'),
+            app: path.resolve(__dirname, 'client', 'app', 'entry.tsx'),
         },
         output: {
             path: path.resolve(__dirname, 'dist'),

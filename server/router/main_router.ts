@@ -1,8 +1,10 @@
 import * as express from 'express';
+import {CustomRequest} from '../interfaces/express_types';
+import {Response} from 'express';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req: CustomRequest, res: Response) => {
     res.redirect('/login');
 });
 

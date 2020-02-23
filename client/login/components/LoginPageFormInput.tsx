@@ -7,6 +7,7 @@ interface ILoginPageFormInputProps {
     name: string;
     type: 'text' | 'password';
     labelText: string;
+    hasError?: boolean;
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
     onFocus?: () => void;
     onBlur?: () => void;
@@ -18,6 +19,7 @@ export class LoginPageFormInput extends React.Component<ILoginPageFormInputProps
     public static defaultProps = {
         value: '',
         name: '',
+        hasError: false,
         isFocused: false,
         onChange: () => {},
         onFocus: () => {},
@@ -34,6 +36,7 @@ export class LoginPageFormInput extends React.Component<ILoginPageFormInputProps
             onFocus,
             onBlur,
             isFocused,
+            hasError,
         } = this.props;
         const showPlaceholder = !isFocused && value.length === 0;
 
@@ -41,6 +44,7 @@ export class LoginPageFormInput extends React.Component<ILoginPageFormInputProps
             <LoginPageStyledFormInputContainer
                 showPlaceholder={showPlaceholder}
                 isFocused={isFocused}
+                hasError={hasError}
             >
                 <label
                     htmlFor={id}

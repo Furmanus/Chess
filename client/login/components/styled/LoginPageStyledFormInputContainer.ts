@@ -1,9 +1,10 @@
-import styled, {DefaultTheme} from 'styled-components';
+import styled from 'styled-components';
 import {StyledProps} from '../../../common/interfaces/styled';
 
 interface IFormInputContainerProps {
     showPlaceholder: boolean;
     isFocused: boolean;
+    hasError?: boolean;
 }
 
 function getLegendStyles(props: IFormInputContainerProps): string {
@@ -29,6 +30,13 @@ function getBorderStyles(props: StyledProps<IFormInputContainerProps>): string {
         return `
             border-width: 2px;
             border-color: ${props.theme.border.color.blue};
+        `;
+    }
+
+    if (props.hasError) {
+        return `
+            border-width: 1px;
+            border-color: ${props.theme.border.color.error};
         `;
     }
 
@@ -105,3 +113,7 @@ export const LoginPageStyledFormInputContainer = styled.div<IFormInputContainerP
         }
     }
 `;
+
+LoginPageStyledFormInputContainer.defaultProps = {
+    hasError: false,
+};

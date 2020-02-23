@@ -9,9 +9,13 @@ import {LoginPageStyledLinksSection} from '../components/styled/LoginPageStyledL
 import {IStore} from '../reducers/reducer';
 import {LoginPageStates} from '../constants/login_page_states';
 import {Dispatch} from 'redux';
-import {changeLoginPageState} from '../actions/actions';
+import {changeFormError, changeLoginPageState} from '../actions/actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {LoginPageStyledRepeatPasswordContainer} from '../components/styled/LoginPageStyledRepeatPasswordContainer';
+import {sendLoginData, sendRegisterData} from '../../api/login';
+import {LoginPageStyledFormErrorContainer} from './styled/LoginPageStyledFormErrorContainer';
+import {getErrorMessage} from '../utils/api_errors';
+import {ErrorCodesToMessageKey} from '../../../common/error_codes';
 
 interface ILoginFormState {
     readonly emailInputValue: string;
@@ -28,20 +32,26 @@ interface IFormElements extends HTMLFormControlsCollection {
 }
 interface ILoginFormStateProps {
     mode: LoginPageStates;
+    formError: keyof ErrorCodesToMessageKey;
 }
 interface ILoginFormDispatchProps {
     changeLoginPageMode: (mode: LoginPageStates) => void;
+    changeFormError: (formError: keyof ErrorCodesToMessageKey) => void;
 }
 
 function mapStateToProps(state: IStore): ILoginFormStateProps {
     return {
         mode: state.mode,
+        formError: state.formError,
     };
 }
 function mapDispatchToProps(dispatch: Dispatch): ILoginFormDispatchProps {
     return {
         changeLoginPageMode: (mode: LoginPageStates) => {
             dispatch(changeLoginPageState(mode));
+        },
+        changeFormError: (formError: keyof ErrorCodesToMessageKey) => {
+            dispatch(changeFormError(formError));
         },
     };
 }
@@ -70,6 +80,7 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
         } = this.state;
         const {
             mode,
+            formError,
         } = this.props;
         const submitButtonText = mode === LoginPageStates.LOGIN ?
             loginPageTranslations[Languages.EN].form.submitButtonText :
@@ -77,15 +88,19 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
         const changeLoginPageStateLinkText = mode === LoginPageStates.LOGIN ?
             loginPageTranslations[Languages.EN].links.registerAccountText :
             loginPageTranslations[Languages.EN].links.loginAccountText;
+        const hasError = Boolean(formError);
 
         return (
             <LoginPageStyledForm
                 onSubmit={this.onFormSubmit}
+                action='/login'
+                method='POST'
             >
                 <LoginPageFormInput
                     id="login"
                     name="login"
                     type="text"
+                    hasError={hasError}
                     labelText={loginPageTranslations[Languages.EN].form.emailInputLabel}
                     onChange={this.onEmailInputChange}
                     onFocus={this.onEmailInputFocus}
@@ -98,6 +113,7 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
                     name="password"
                     labelText={loginPageTranslations[Languages.EN].form.passwordInputLabel}
                     type='password'
+                    hasError={hasError}
                     onChange={this.onPasswordInputChange}
                     onFocus={this.onPasswordInputFocus}
                     onBlur={this.onPasswordInputBlur}
@@ -110,6 +126,7 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
                         name="repeatPassword"
                         labelText={loginPageTranslations[Languages.EN].form.repeatPasswordInputLabel}
                         type="password"
+                        hasError={hasError}
                         value={repeatPasswordInputValue}
                         isFocused={repeatPasswordInputFocused}
                         onChange={this.onRepeatPasswordInputChange}
@@ -131,21 +148,77 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
                         {changeLoginPageStateLinkText}
                     </a>
                 </LoginPageStyledLinksSection>
+                {formError && this.renderErrorContainer()}
             </LoginPageStyledForm>
         );
     }
     @boundMethod
     private onFormSubmit(e: SyntheticEvent): void {
         const {
+            changeFormError,
+        } = this.props;
+        const {
             elements,
         } = e.target as HTMLFormElement;
         const {
-            login,
-            password,
-            repeatPassword,
+            login: loginElement,
+            password: passwordElement,
+            repeatPassword: repeatPasswordElement,
         } = elements as IFormElements;
+        const login = loginElement?.value;
+        const password = passwordElement?.value;
+        const repeatedPassword = repeatPasswordElement?.value;
 
         e.preventDefault();
+
+        changeFormError(null);
+
+        this.submitForm({
+            login,
+            password,
+            repeatedPassword,
+        });
+    }
+    private async submitForm(data: {login: string, password: string, repeatedPassword: string}): Promise<void> {
+        const {
+            mode,
+            changeFormError,
+        } = this.props;
+        const {
+            login,
+            password,
+            repeatedPassword,
+        } = data;
+
+        if (mode === LoginPageStates.LOGIN) {
+            if (login && password) {
+                try {
+                    await sendLoginData(login, password);
+
+                    window.location.pathname = '/dashboard';
+                } catch (e) {
+                    changeFormError(e.response.data.errorCode);
+                }
+            } else {
+                changeFormError(1004);
+            }
+        } else {
+            if (login && password && repeatedPassword) {
+                if (password === repeatedPassword) {
+                    try {
+                        await sendRegisterData(login, password, repeatedPassword);
+
+                        window.location.pathname = '/dashboard';
+                    } catch (e) {
+                        changeFormError(e.response.data.errorCode);
+                    }
+                } else {
+                    changeFormError(1000);
+                }
+            } else {
+                changeFormError(1004);
+            }
+        }
     }
     @boundMethod
     private onEmailInputChange(e: SyntheticEvent): void {
@@ -217,15 +290,31 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
     private onRegisterLinkClick(): void {
         const {
             changeLoginPageMode,
+            changeFormError,
             mode,
         } = this.props;
 
         changeLoginPageMode(mode === LoginPageStates.LOGIN ? LoginPageStates.REGISTER : LoginPageStates.LOGIN);
+        changeFormError(null);
+
         this.setState({
             emailInputValue: '',
             passwordInputValue: '',
             repeatPasswordInputValue: '',
         });
+    }
+    private renderErrorContainer(): React.ReactNode {
+        const {
+            formError,
+        } = this.props;
+
+        return (
+            <LoginPageStyledFormErrorContainer>
+                <span>
+                    {getErrorMessage(formError)}
+                </span>
+            </LoginPageStyledFormErrorContainer>
+        );
     }
 }
 

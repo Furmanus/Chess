@@ -7,12 +7,15 @@ export const theme: DefaultTheme = {
             red: '#dc004e',
             blue: '#1976d2',
             darkblue: '#115293',
+            navigation: '#4b0082',
+            darkgray: '#696969',
         },
         font: {
             primary: '#101010',
             secondary: '#a9a9a9',
             white: '#ffffff',
             blue: '#1976d2',
+            error: '#ff0000',
         },
         svg: {
             white: '#ffffff',
@@ -34,6 +37,7 @@ export const theme: DefaultTheme = {
             blue: '#1976d2',
             gray: '#d0d0d0',
             black: '#000000',
+            error: '#ff0000',
         },
     },
 };
