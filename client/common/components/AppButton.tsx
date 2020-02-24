@@ -16,7 +16,7 @@ interface AppButtonProps {
 }
 
 export class AppButton extends React.Component<AppButtonProps, {}> {
-    public static DefaultProps: Partial<AppButtonProps> = {
+    public static defaultProps: Partial<AppButtonProps> = {
         onClick: noop,
         disabled: false,
         variation: 'normal',

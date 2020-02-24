@@ -18,6 +18,7 @@ import {AppPageGameBrick} from '../../components/games/AppPageGameBrick';
 import {AppPageGamesEmptyState} from '../../components/games/AppPageGamesEmptyState';
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
+import {AppStyledOpaqueContainer} from '../../../common/styled/AppStyledOpaqueContainer';
 
 interface DispatchProps {
     createGame: () => void;
@@ -73,25 +74,27 @@ class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
                         {appPageTranslations[Languages.EN].games.create}
                     </AppButton>
                 </AppPageStyledSubPageHeading>
-                <AppPageStyledSubPageGamesContentWrapper
-                    opaque={shouldBlockActions}
-                >
+                <AppPageStyledSubPageGamesContentWrapper>
                     {
                         isFetchingGames ?
                             <AppStyledLoader
                                 type="RevolvingDot"
-                                color={theme.color.background.darkgray}
+                                color={theme.color.background.darkblue}
                                 width={150}
                                 height={150}
                             /> :
                             <Fade>
                                 <React.Fragment>
-                                    {this.renderGames()}
+                                    <AppStyledOpaqueContainer
+                                        opacity={shouldBlockActions ? 0.3 : 1}
+                                    >
+                                        {this.renderGames()}
+                                    </AppStyledOpaqueContainer>
                                     {
                                         isCreatingGame &&
                                         <AppStyledLoader
                                             type="RevolvingDot"
-                                            color={theme.color.background.darkgray}
+                                            color={theme.color.background.darkblue}
                                             width={150}
                                             height={150}
                                         />

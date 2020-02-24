@@ -31,8 +31,8 @@ class DatabaseHelperClass {
             login,
         });
     }
-    public createGame(playerId: number): Promise<GameData> {
-        const game = this.GameModel.create({
+    public async createGame(playerId: number): Promise<GameData> {
+        const game = await this.GameModel.create({
             [GameTableFields.PLAYER1_ID]: playerId,
             [GameTableFields.ACTIVE_PLAYER]: '1',
             [GameTableFields.GAME_STATE]: 'new',

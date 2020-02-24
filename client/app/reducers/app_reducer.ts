@@ -3,7 +3,9 @@ import {
     APP_CREATE_GAME,
     APP_CREATE_GAME_FAILURE,
     APP_CREATE_GAME_SUCCESS,
-    APP_FETCH_GAMES, APP_FETCH_GAMES_FAILURE, APP_FETCH_GAMES_SUCCESS,
+    APP_FETCH_GAMES,
+    APP_FETCH_GAMES_FAILURE,
+    APP_FETCH_GAMES_SUCCESS,
     APP_LOGOUT,
 } from '../constants/app_actions';
 import {GameDataWithPlayerNames} from '../../../common/interfaces/game_interfaces';
