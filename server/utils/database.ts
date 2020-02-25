@@ -4,7 +4,7 @@ import {Game, initializeGames} from '../models/games';
 import {encrypt} from './crypto';
 import {GameTableFields} from '../enums/database';
 import {createInitialBoard} from '../../common/helpers/game_helper';
-import {GameData, GameDataWithPlayerNames} from '../../common/interfaces/game_interfaces';
+import {GameData, GameDataWithPlayerNames, UserData} from '../../common/interfaces/game_interfaces';
 
 class DatabaseHelperClass {
     public sequelize: Sequelize;
@@ -31,10 +31,20 @@ class DatabaseHelperClass {
             login,
         });
     }
+    public async getUserData(userId: number): Promise<UserData> {
+        const userData = await this.UsersModel.findOne({
+            attributes: ['login', 'id'],
+            where: {
+                id: userId,
+            },
+        });
+
+        return userData.dataValues;
+    }
     public async createGame(playerId: number): Promise<GameData> {
         const game = await this.GameModel.create({
             [GameTableFields.PLAYER1_ID]: playerId,
-            [GameTableFields.ACTIVE_PLAYER]: '1',
+            [GameTableFields.ACTIVE_PLAYER]: playerId,
             [GameTableFields.GAME_STATE]: 'new',
             [GameTableFields.GAME_DATA]: createInitialBoard(),
             [GameTableFields.MOVES]: [],

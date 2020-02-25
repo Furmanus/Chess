@@ -2,9 +2,11 @@ import {AppActionTypes} from './app_action_types';
 import {
     APP_CREATE_GAME,
     APP_CREATE_GAME_FAILURE,
-    APP_CREATE_GAME_SUCCESS, APP_FETCH_GAMES,
+    APP_CREATE_GAME_SUCCESS,
+    APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
-    APP_FETCH_GAMES_SUCCESS,
+    APP_FETCH_GAMES_SUCCESS, APP_FETCH_USER_SETTINGS, APP_FETCH_USER_SETTINGS_FAILURE,
+    APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -17,8 +19,9 @@ import {AppThunkAction} from '../interfaces/thunk';
 import {
     createGame as createGameApi,
     fetchGames as fetchGamesApi,
+    fetchUserSettings as fetchUserSettingsApi,
 } from '../../api/app';
-import {GameDataWithPlayerNames} from '../../../common/interfaces/game_interfaces';
+import {GameDataWithPlayerNames, UserData} from '../../../common/interfaces/game_interfaces';
 
 export function logout(): ThunkAction<void, AppStore, null, Action<string>> {
     return async (dispatch: Dispatch) => {
@@ -98,5 +101,31 @@ function fetchGamesSuccess(games: GameDataWithPlayerNames[]): AppActionTypes {
 function fetchGamesFailure(): AppActionTypes {
     return {
         type: APP_FETCH_GAMES_FAILURE,
+    };
+}
+export function fetchUserSettings(): AppThunkAction {
+    return async (dispatch: Dispatch) => {
+        dispatch({
+            type: APP_FETCH_USER_SETTINGS,
+        });
+
+        try {
+            const response = await fetchUserSettingsApi();
+
+            dispatch(fetchUserSettingsSuccess(response.data));
+        } catch(e) {
+            dispatch(fetchUserSettingsFailure());
+        }
+    };
+}
+function fetchUserSettingsSuccess(settings: UserData): AppActionTypes {
+    return {
+        type: APP_FETCH_USER_SETTINGS_SUCCESS,
+        userSettings: settings,
+    };
+}
+function fetchUserSettingsFailure() {
+    return {
+        type: APP_FETCH_USER_SETTINGS_FAILURE,
     };
 }

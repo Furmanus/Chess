@@ -6,20 +6,27 @@ import {
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
+    APP_FETCH_USER_SETTINGS,
+    APP_FETCH_USER_SETTINGS_FAILURE,
+    APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_LOGOUT,
 } from '../constants/app_actions';
-import {GameDataWithPlayerNames} from '../../../common/interfaces/game_interfaces';
+import {GameDataWithPlayerNames, UserData,} from '../../../common/interfaces/game_interfaces';
 
 export interface AppStore {
     games: GameDataWithPlayerNames[];
     isLoadingGames: boolean;
     isCreatingGame: boolean;
+    isFetchingSettings: boolean;
+    userSettings: UserData;
 }
 
 const initialState: AppStore = {
     games: [],
     isLoadingGames: false,
     isCreatingGame: false,
+    isFetchingSettings: false,
+    userSettings: null,
 };
 
 export function appReducer(state = initialState, action: AppActionTypes): AppStore {
@@ -63,6 +70,22 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             return {
                 ...state,
                 isLoadingGames: false,
+            };
+        case APP_FETCH_USER_SETTINGS:
+            return {
+                ...state,
+                isFetchingSettings: true,
+            };
+        case APP_FETCH_USER_SETTINGS_SUCCESS:
+            return {
+                ...state,
+                isFetchingSettings: false,
+                userSettings: action.userSettings,
+            };
+        case APP_FETCH_USER_SETTINGS_FAILURE:
+            return {
+                ...state,
+                isFetchingSettings: false,
             };
         default:
             return {

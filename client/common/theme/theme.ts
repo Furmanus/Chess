@@ -23,6 +23,7 @@ export const theme: DefaultTheme = {
     },
     font: {
         size: {
+            subsmall: '10px',
             small: '12px',
             submedium: '14px',
             medium: '16px',

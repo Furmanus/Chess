@@ -13,6 +13,7 @@ const englishTranslations = {
         gameBox: {
             onlyFirstPlayer: '{{player1}} is waiting for opponent',
             button: 'enter',
+            turnReady: 'turn ready',
         },
     }
 };

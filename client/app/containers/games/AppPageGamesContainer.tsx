@@ -6,10 +6,7 @@ import {appPageTranslations, Languages} from '../../constants/app_translations';
 // @ts-ignore
 import * as Fade from 'react-reveal/Fade';
 import {ThunkDispatch} from 'redux-thunk';
-import {
-    createGame,
-    fetchGames,
-} from '../../actions/app_actions';
+import {createGame, fetchGames,} from '../../actions/app_actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {boundMethod} from 'autobind-decorator';
 import {AppStore} from '../../reducers/app_reducer';
@@ -19,6 +16,7 @@ import {AppPageGamesEmptyState} from '../../components/games/AppPageGamesEmptySt
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
 import {AppStyledOpaqueContainer} from '../../../common/styled/AppStyledOpaqueContainer';
+import {GameTableFields, UserTableFields} from '../../../../server/enums/database';
 
 interface DispatchProps {
     createGame: () => void;
@@ -28,6 +26,7 @@ interface StateProps {
     games: GameDataWithPlayerNames[];
     isCreatingGame: boolean;
     isFetchingGames: boolean;
+    activeUserId: number;
 }
 
 function mapStateToProps(state: AppStore): StateProps {
@@ -35,6 +34,7 @@ function mapStateToProps(state: AppStore): StateProps {
         games: state.games,
         isCreatingGame: state.isCreatingGame,
         isFetchingGames: state.isLoadingGames,
+        activeUserId: state.userSettings[UserTableFields.ID],
     };
 }
 function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps {
@@ -131,16 +131,23 @@ class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
             games,
             isFetchingGames,
             isCreatingGame,
+            activeUserId,
         } = this.props;
 
         if (games.length) {
-            return games.map((game: GameDataWithPlayerNames) => (
-                <AppPageGameBrick
-                    key={game.id}
-                    data={game}
-                    disabled={isFetchingGames || isCreatingGame}
-                />
-            ))
+            return games.map((game: GameDataWithPlayerNames) => {
+                // TODO zbadac czemu tu string wraca?
+                const turnReady = activeUserId === parseInt(game[GameTableFields.ACTIVE_PLAYER] as unknown as string);
+
+                return (
+                    <AppPageGameBrick
+                        key={game.id}
+                        data={game}
+                        turnReady={turnReady}
+                        disabled={isFetchingGames || isCreatingGame}
+                    />
+                );
+            })
         }
 
         return (

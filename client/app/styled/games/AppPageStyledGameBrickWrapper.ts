@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const AppPageStyledGameBrickWrapper = styled.div`
+    position: relative;
     padding: 10px;
     width: 250px;
     height: 300px;

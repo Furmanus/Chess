@@ -5,7 +5,7 @@ export interface GameModel {
     readonly id: number;
     player1_id: number;
     player2_id: number;
-    active_player: '1' | '2';
+    active_player: number;
     game_data: object;
     moves: object;
     game_state: GameStates;
@@ -26,7 +26,7 @@ function initialize(sequelize: Sequelize): void {
             unique: true,
         },
         active_player: {
-            type: DataTypes.ENUM('1', '2'),
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
         game_data: {
