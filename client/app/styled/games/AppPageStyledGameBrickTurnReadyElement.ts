@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
+
+const animation = keyframes`
+    from {
+        opacity: 1;
+    }
+    to {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+`;
 
 export const AppPageStyledGameBrickTurnReadyElement = styled.div`
     position: absolute;
@@ -14,4 +24,17 @@ export const AppPageStyledGameBrickTurnReadyElement = styled.div`
     color: ${(props) => props.theme.color.font.white};
     font-weight: ${(props) => props.theme.font.weight.bold};
     font-size: ${(props) => props.theme.font.size.subsmall};
+    
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        border-radius: 8px;
+        background: ${(props) => props.theme.color.background.blue};
+        z-index: -1;
+        animation: ${animation} 1s ease infinite;
+    }
 `;

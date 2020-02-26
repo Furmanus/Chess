@@ -9,8 +9,6 @@ import {databaseHelper} from './utils/database';
 import {dashboardRouter} from './router/dashboard_router';
 import * as expressSession from 'express-session';
 import * as expressMySqlSession from 'express-mysql-session';
-import {Game} from './models/games';
-import {User} from './models/users';
 
 const app = express();
 const httpPort = process.env.NODE_ENV === 'development' ? 3000 : 80;
