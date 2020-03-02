@@ -5,14 +5,19 @@ export const AppPageStyledGameBrickWrapper = styled.div`
     padding: 10px;
     width: 250px;
     height: 300px;
-    border: 1px dashed ${(props) => props.theme.border.color.black};
     margin: 15px;
     border-radius: 8px;
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.thin};
     font-size: ${(props) => props.theme.font.size.small};
+    transition: 0.4s ease-in-out;
+    
+    &:hover {
+        box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.veryThick};
+    }
     
     .players {
         display: flex;

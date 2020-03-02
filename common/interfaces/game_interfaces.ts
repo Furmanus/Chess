@@ -34,6 +34,9 @@ export interface User {
     [UserTableFields.UPDATED_AT]: string;
 }
 export interface UserData {
-    [UserTableFields.ID]: number;
-    [UserTableFields.LOGIN]: string;
+    id: number;
+    login: string;
+}
+export interface LoggedUsers {
+    [id: number]: string;
 }

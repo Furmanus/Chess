@@ -36,6 +36,8 @@ router.post('/login', async (req: CustomRequest<PostLoginRequestBodyType>, res: 
         if (foundUser) {
             if (compareString(foundUser.dataValues.password, password)) {
                 req.session.user = foundUser.dataValues.id;
+                req.session.userName = foundUser.dataValues.login;
+
                 res.status(200).end();
             } else {
                 res.status(403).send({
@@ -67,6 +69,7 @@ router.post('/register', async (req: CustomRequest<RegisterRequestBodyType>, res
             const createdUser = await databaseHelper.createUser(user, password);
 
             req.session.user = createdUser.dataValues.id;
+            req.session.userName = createdUser.dataValues.login;
             res.status(202).end();
         } catch (e) {
             const errorObject = getLoginErrorCodeFromSequelizeError(e);

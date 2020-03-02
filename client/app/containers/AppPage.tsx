@@ -5,7 +5,10 @@ import {AppPageMainSection} from './AppPageMainSection';
 import {UserData} from '../../../common/interfaces/game_interfaces';
 import {AppStore} from '../reducers/app_reducer';
 import {connect, ConnectedProps} from 'react-redux';
-import {fetchUserSettings} from '../actions/app_actions';
+import {
+    fetchActiveUsers as fetchActiveUsersAction,
+    fetchUserSettings,
+} from '../actions/app_actions';
 import {ThunkDispatch} from 'redux-thunk';
 import {AppStyledLoader} from '../../common/styled/AppStyledLoader';
 import {theme} from '../../common/theme/theme';
@@ -13,21 +16,27 @@ import {theme} from '../../common/theme/theme';
 interface AppPageStoreProps {
     userSettings: UserData;
     isFetchingUserSettings: boolean;
+    isFetchingUsers: boolean;
 }
 interface AppPageDispatchProps {
     fetchSettings: () => void;
+    fetchActiveUsers: () => void;
 }
 
 function mapStateToProps(state: AppStore): AppPageStoreProps {
     return {
         userSettings: state.userSettings,
         isFetchingUserSettings: state.isFetchingSettings,
+        isFetchingUsers: state.isFetchingUsers,
     };
 }
 function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): AppPageDispatchProps {
     return {
         fetchSettings: () => {
             dispatch(fetchUserSettings());
+        },
+        fetchActiveUsers: () => {
+            dispatch(fetchActiveUsersAction());
         },
     };
 }
@@ -40,13 +49,14 @@ class AppPageClass extends React.Component<ComponentProps, {}> {
     public render(): React.ReactNode {
         const {
             isFetchingUserSettings,
+            isFetchingUsers,
             userSettings,
         } = this.props;
 
         return (
             <React.Fragment>
                 {
-                    isFetchingUserSettings || !userSettings ?
+                    isFetchingUserSettings || isFetchingUsers || !userSettings ?
                         <AppStyledLoader
                             type="RevolvingDot"
                             color={theme.color.background.darkblue}
@@ -64,9 +74,11 @@ class AppPageClass extends React.Component<ComponentProps, {}> {
     public componentDidMount(): void {
         const {
             fetchSettings,
+            fetchActiveUsers,
         } = this.props;
 
         fetchSettings();
+        fetchActiveUsers();
     }
 }
 

@@ -3,7 +3,8 @@ import {DefaultTheme} from 'styled-components';
 export const theme: DefaultTheme = {
     color: {
         background: {
-            primary: '#ffffff',
+            primary: '#f2f4f7',
+            secondary: '#ffffff',
             red: '#dc004e',
             blue: '#1976d2',
             darkblue: '#115293',
@@ -40,6 +41,13 @@ export const theme: DefaultTheme = {
             black: '#000000',
             error: '#ff0000',
         },
+    },
+    boxShadowBlur: {
+        veryThick: '18px',
+        thick: '14px',
+        medium: '10px',
+        thin: '6px',
+        veryThin: '3px',
     },
 };
 

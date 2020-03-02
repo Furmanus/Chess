@@ -2,6 +2,9 @@ import {
     APP_CREATE_GAME,
     APP_CREATE_GAME_FAILURE,
     APP_CREATE_GAME_SUCCESS,
+    APP_FETCH_ACTIVE_USERS,
+    APP_FETCH_ACTIVE_USERS_FAILURE,
+    APP_FETCH_ACTIVE_USERS_SUCCESS,
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
@@ -10,9 +13,15 @@ import {
     APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
-    APP_LOGOUT_SUCCESS
+    APP_LOGOUT_SUCCESS,
+    APP_USER_DISCONNECTED,
+    APP_USER_JOINED,
 } from '../constants/app_actions';
-import {GameDataWithPlayerNames, UserData} from '../../../common/interfaces/game_interfaces';
+import {
+    GameDataWithPlayerNames,
+    LoggedUsers,
+    UserData,
+} from '../../../common/interfaces/game_interfaces';
 
 interface LogoutAction {
     type: typeof APP_LOGOUT;
@@ -53,6 +62,24 @@ interface FetchUserSettingsSuccess {
 interface FetchUserSettingsFailure {
     type: typeof APP_FETCH_USER_SETTINGS_FAILURE;
 }
+interface FetchActiveUsers {
+    type: typeof APP_FETCH_ACTIVE_USERS;
+}
+interface FetchActiveUsersSuccess {
+    type: typeof APP_FETCH_ACTIVE_USERS_SUCCESS;
+    activeUsers: LoggedUsers;
+}
+interface FetchActiveUsersFailure {
+    type: typeof APP_FETCH_ACTIVE_USERS_FAILURE;
+}
+interface AddUserToActiveUsers {
+    type: typeof APP_USER_JOINED;
+    user: UserData;
+}
+interface RemoveUserFromActiveUsers {
+    type: typeof APP_USER_DISCONNECTED;
+    userId: string;
+}
 
 export type AppActionTypes =
     LogoutAction |
@@ -66,4 +93,9 @@ export type AppActionTypes =
     FetchGamesFailure |
     FetchUserSettings |
     FetchUserSettingsSuccess |
-    FetchUserSettingsFailure;
+    FetchUserSettingsFailure |
+    FetchActiveUsers |
+    FetchActiveUsersSuccess |
+    FetchActiveUsersFailure |
+    AddUserToActiveUsers |
+    RemoveUserFromActiveUsers;

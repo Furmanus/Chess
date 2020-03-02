@@ -3,6 +3,9 @@ import {
     APP_CREATE_GAME,
     APP_CREATE_GAME_FAILURE,
     APP_CREATE_GAME_SUCCESS,
+    APP_FETCH_ACTIVE_USERS,
+    APP_FETCH_ACTIVE_USERS_FAILURE,
+    APP_FETCH_ACTIVE_USERS_SUCCESS,
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
@@ -10,15 +13,20 @@ import {
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_LOGOUT,
+    APP_USER_DISCONNECTED,
+    APP_USER_JOINED,
 } from '../constants/app_actions';
-import {GameDataWithPlayerNames, UserData,} from '../../../common/interfaces/game_interfaces';
+import {GameDataWithPlayerNames, LoggedUsers, UserData,} from '../../../common/interfaces/game_interfaces';
+import {UserTableFields} from '../../../server/enums/database';
 
 export interface AppStore {
     games: GameDataWithPlayerNames[];
     isLoadingGames: boolean;
     isCreatingGame: boolean;
     isFetchingSettings: boolean;
+    isFetchingUsers: boolean;
     userSettings: UserData;
+    activeUsers: LoggedUsers;
 }
 
 const initialState: AppStore = {
@@ -26,7 +34,9 @@ const initialState: AppStore = {
     isLoadingGames: false,
     isCreatingGame: false,
     isFetchingSettings: false,
+    isFetchingUsers: false,
     userSettings: null,
+    activeUsers: {},
 };
 
 export function appReducer(state = initialState, action: AppActionTypes): AppStore {
@@ -77,15 +87,59 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 isFetchingSettings: true,
             };
         case APP_FETCH_USER_SETTINGS_SUCCESS:
+            const {
+                id,
+                login,
+            } = action.userSettings;
+            const activeUsersCopy = {...state.activeUsers};
+
+            activeUsersCopy[id] = login;
+
             return {
                 ...state,
                 isFetchingSettings: false,
                 userSettings: action.userSettings,
+                activeUsers: activeUsersCopy,
             };
         case APP_FETCH_USER_SETTINGS_FAILURE:
             return {
                 ...state,
                 isFetchingSettings: false,
+            };
+        case APP_FETCH_ACTIVE_USERS:
+            return {
+                ...state,
+                isFetchingUsers: true,
+            };
+        case APP_FETCH_ACTIVE_USERS_SUCCESS:
+            return {
+                ...state,
+                activeUsers: action.activeUsers,
+                isFetchingUsers: false,
+            };
+        case APP_FETCH_ACTIVE_USERS_FAILURE:
+            return {
+                ...state,
+                isFetchingUsers: false,
+            };
+        case APP_USER_JOINED:
+            const userListJoinCopy = {
+                ...state.activeUsers,
+                [action.user[UserTableFields.ID]]: action.user[UserTableFields.LOGIN],
+            };
+
+            return {
+                ...state,
+                activeUsers: userListJoinCopy,
+            };
+        case APP_USER_DISCONNECTED:
+            const userListRemoveCopy = {...state.activeUsers};
+            // TODO think how to solve it better
+            delete userListRemoveCopy[action.userId as any];
+
+            return {
+                ...state,
+                activeUsers: userListRemoveCopy,
             };
         default:
             return {

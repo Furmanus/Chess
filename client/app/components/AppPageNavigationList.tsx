@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {AppPageStyledPageNavigationList} from '../styled/AppPageStyledNavigationList';
 import {appPageTranslations, Languages} from '../constants/app_translations';
-import {FaChess} from 'react-icons/fa';
+import {FaChess, FaUsers} from 'react-icons/fa';
 import {IoIosLogOut, MdSettings} from 'react-icons/all';
 import {Link} from 'react-router-dom'
 import {AppRoutes} from '../../common/constants/app_routes';
@@ -41,6 +41,12 @@ class AppPageNavigationListClass extends React.Component<ComponentProps, {}> {
                         <Link to={AppRoutes.SETTINGS}>
                             <MdSettings/>
                             <span>{appPageTranslations[Languages.EN].navigation.settings}</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={AppRoutes.USERS}>
+                            <FaUsers/>
+                            <span>{appPageTranslations[Languages.EN].navigation.users}</span>
                         </Link>
                     </li>
                     <li onClick={this.onLogoutClick}>

@@ -5,6 +5,7 @@ const englishTranslations = {
     navigation: {
         games: 'games',
         settings: 'settings',
+        users: 'users',
         logout: 'logout',
     },
     games: {

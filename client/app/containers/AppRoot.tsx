@@ -8,6 +8,7 @@ import {appReducer} from '../reducers/app_reducer';
 import thunk from 'redux-thunk';
 import {BrowserRouter} from 'react-router-dom';
 import {logger} from 'redux-logger';
+import {socketManager} from '../utils/socket';
 
 const middlewares: any[] = [thunk];
 
@@ -16,6 +17,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const store = createStore(appReducer, applyMiddleware(...middlewares));
+
+socketManager.initialize(store.dispatch);
 
 const GlobalStyle = createGlobalStyle`
     * {

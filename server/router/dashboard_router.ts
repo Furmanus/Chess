@@ -3,6 +3,7 @@ import {Response} from 'express';
 import {CustomRequest} from '../interfaces/express_types';
 import {databaseHelper} from '../utils/database';
 import {GameTableFields} from '../enums/database';
+import {sockerHelper} from '../helpers/socket_helper';
 
 const router = express.Router();
 
@@ -11,7 +12,9 @@ router.get('/dashboard', (req: CustomRequest, res: Response) => {
 });
 router.get('/dashboard/games', dashboardRequestHandler);
 router.get('/dashboard/settings', dashboardRequestHandler);
+router.get('/dashboard/users', dashboardRequestHandler);
 router.get('/dashboard/user_games', getUserGamesHandler);
+router.get('/dashboard/active_users', getConnectedUsers);
 router.post('/dashboard/user_games', createGameRequestHandler);
 router.post('/logout', (req: CustomRequest, res: Response) => {
     req.session.destroy((err) => {
@@ -68,6 +71,9 @@ async function getUserGamesHandler(req: CustomRequest, res: Response): Promise<v
     } else {
         res.status(401).end();
     }
+}
+function getConnectedUsers(req: CustomRequest, res: Response): void {
+    res.status(200).send(sockerHelper.getLoggedUsers());
 }
 
 export {router as dashboardRouter};
