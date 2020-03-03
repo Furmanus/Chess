@@ -9,7 +9,7 @@ export const AppPageStyledList = styled.ul`
     margin: 0;
     
     li {
-        padding: 3px 5px;
+        padding: 3px 8px;
         height: 40px;
         font-size: ${(props) => props.theme.font.size.small};
         display: flex;
@@ -22,6 +22,7 @@ export const AppPageStyledList = styled.ul`
         &:hover {
             cursor: pointer;
             background: ${(props) => props.theme.color.background.primary};
+            box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.veryThin + ' ' + props.theme.color.background.darkgray} inset;
         }
     }
 `;

@@ -23,12 +23,18 @@ class SocketManager {
     }
     @boundMethod
     private onUserConnected(data: SocketClientConnectedDataType): void {
-        this.dispatch(addUserToActiveUsers(data));
+        if (data.id && data.login) {
+            this.dispatch(addUserToActiveUsers(data));
+        } else {
+            console.warn('Unknown user connected');
+        }
     }
     @boundMethod
     private onUserDisconnected(data: SocketClientConnectedDataType): void {
         // TODO weird type cast
-        this.dispatch(removeUserFromActiveUsers(data.id as unknown as string));
+        if (data.id) {
+            this.dispatch(removeUserFromActiveUsers(data.id as unknown as string));
+        }
     }
 }
 
