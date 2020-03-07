@@ -14,6 +14,7 @@ router.get('/dashboard/games', dashboardRequestHandler);
 router.get('/dashboard/settings', dashboardRequestHandler);
 router.get('/dashboard/users', dashboardRequestHandler);
 router.get('/dashboard/user_games', getUserGamesHandler);
+router.get('/dashboard/user_vacant_games', getUserOrVacantGamesHandler);
 router.get('/dashboard/active_users', getConnectedUsers);
 router.post('/dashboard/user_games', createGameRequestHandler);
 router.post('/logout', (req: CustomRequest, res: Response) => {
@@ -70,6 +71,23 @@ async function getUserGamesHandler(req: CustomRequest, res: Response): Promise<v
         }
     } else {
         res.status(401).end();
+    }
+}
+async function getUserOrVacantGamesHandler(req: CustomRequest, res: Response): Promise<void> {
+    const {
+        session,
+    } = req;
+    const userId = session?.user;
+
+    if (userId) {
+        try {
+            const games = await databaseHelper.getUserOrVacantGames(userId);
+
+            res.status(200).send(games);
+        } catch(e) {
+            console.error(e);
+            res.status(500).end();
+        }
     }
 }
 function getConnectedUsers(req: CustomRequest, res: Response): void {

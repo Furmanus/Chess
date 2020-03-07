@@ -16,6 +16,11 @@ const englishTranslations = {
             button: 'enter',
             turnReady: 'turn ready',
         },
+        filters: {
+            all: 'All',
+            user: 'My games',
+            vacant: 'Vacant',
+        },
     }
 };
 export const appPageTranslations = {

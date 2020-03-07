@@ -2,7 +2,8 @@ import {AppActionTypes} from './app_action_types';
 import {
     APP_CREATE_GAME,
     APP_CREATE_GAME_FAILURE,
-    APP_CREATE_GAME_SUCCESS, APP_FETCH_ACTIVE_USERS,
+    APP_CREATE_GAME_SUCCESS,
+    APP_FETCH_ACTIVE_USERS,
     APP_FETCH_ACTIVE_USERS_FAILURE,
     APP_FETCH_ACTIVE_USERS_SUCCESS,
     APP_FETCH_GAMES,
@@ -11,9 +12,12 @@ import {
     APP_FETCH_USER_SETTINGS,
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
+    APP_FILTER_CHANGE,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
-    APP_LOGOUT_SUCCESS, APP_USER_DISCONNECTED, APP_USER_JOINED,
+    APP_LOGOUT_SUCCESS,
+    APP_USER_DISCONNECTED,
+    APP_USER_JOINED,
 } from '../constants/app_actions';
 import {Action, Dispatch} from 'redux';
 import {logoutRequest} from '../../api/login';
@@ -22,11 +26,12 @@ import {AppStore} from '../reducers/app_reducer';
 import {AppThunkAction} from '../interfaces/thunk';
 import {
     createGame as createGameApi,
-    fetchGames as fetchGamesApi,
-    fetchUserSettings as fetchUserSettingsApi,
     fetchActiveUsers as fetchActiveUsersApi,
+    fetchUserAndVacantGames as fetchGamesApi,
+    fetchUserSettings as fetchUserSettingsApi,
 } from '../../api/app';
 import {GameDataWithPlayerNames, LoggedUsers, UserData} from '../../../common/interfaces/game_interfaces';
+import {GamesFilter} from '../constants/app_games';
 
 export function logout(): ThunkAction<void, AppStore, null, Action<string>> {
     return async (dispatch: Dispatch) => {
@@ -170,5 +175,11 @@ export function removeUserFromActiveUsers(userId: string): AppActionTypes {
     return {
         type: APP_USER_DISCONNECTED,
         userId,
+    };
+}
+export function changeFilter(value: GamesFilter): AppActionTypes {
+    return {
+        type: APP_FILTER_CHANGE,
+        gamesFilter: value,
     };
 }

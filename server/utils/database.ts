@@ -87,6 +87,24 @@ class DatabaseHelperClass {
             };
         });
     }
+    public async getUserOrVacantGames(userId: number): Promise<GameDataWithPlayerNames[]> {
+        const userGames = await Game.findAll({
+            where: {
+                [Op.or]: [
+                    {[GameTableFields.PLAYER1_ID]: userId},
+                    {[GameTableFields.PLAYER2_ID]: userId},
+                    {[GameTableFields.PLAYER2_ID]: null},
+                ]
+            },
+            include: ['player1', 'player2'],
+        });
+
+        return userGames.map((game: any) => ({
+            ...game.dataValues,
+            player1Name: game.player1?.dataValues?.login,
+            player2Name: game.player2?.dataValues?.login,
+        }));
+    }
     private initalizeSequelize(): void {
         const {
             DATABASE_BASENAME,

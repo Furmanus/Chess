@@ -1,12 +1,9 @@
 import * as React from 'react';
-import {AppPageStyledSubPageHeading} from '../../styled/games/AppPageStyledSubPageHeading';
 import {AppPageStyledSubPageGamesContentWrapper} from '../../styled/games/AppPageStyledSubPageGamesContentWrapper';
-import {AppButton} from '../../../common/components/AppButton';
-import {appPageTranslations, Languages} from '../../constants/app_translations';
 // @ts-ignore
 import * as Fade from 'react-reveal/Fade';
 import {ThunkDispatch} from 'redux-thunk';
-import {createGame, fetchGames,} from '../../actions/app_actions';
+import {changeFilter, createGame, fetchGames,} from '../../actions/app_actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {boundMethod} from 'autobind-decorator';
 import {AppStore} from '../../reducers/app_reducer';
@@ -17,24 +14,30 @@ import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
 import {AppStyledOpaqueContainer} from '../../../common/styled/AppStyledOpaqueContainer';
 import {GameTableFields, UserTableFields} from '../../../../server/enums/database';
+import {GamesFilter} from '../../constants/app_games';
+import {getChoosenGames} from '../../selectors/selectors';
+import {AppPageGameNav} from '../../components/games/AppPageGameNav';
 
 interface DispatchProps {
     createGame: () => void;
     fetchGames: () => void
+    changeFilter: (value: GamesFilter) => void;
 }
 interface StateProps {
     games: GameDataWithPlayerNames[];
     isCreatingGame: boolean;
     isFetchingGames: boolean;
     activeUserId: number;
+    gamesFilter: GamesFilter;
 }
 
 function mapStateToProps(state: AppStore): StateProps {
     return {
-        games: state.games,
+        games: getChoosenGames(state),
         isCreatingGame: state.isCreatingGame,
         isFetchingGames: state.isLoadingGames,
         activeUserId: state.userSettings[UserTableFields.ID],
+        gamesFilter: state.gamesFilter,
     };
 }
 function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps {
@@ -44,6 +47,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps
         },
         fetchGames: () => {
             dispatch(fetchGames());
+        },
+        changeFilter: (value: GamesFilter) => {
+            dispatch(changeFilter(value));
         },
     };
 }
@@ -58,22 +64,18 @@ class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
         const {
             isFetchingGames,
             isCreatingGame,
+            gamesFilter,
         } = this.props;
         const shouldBlockActions = isCreatingGame || isFetchingGames;
 
         return (
             <React.Fragment>
-                <AppPageStyledSubPageHeading>
-                    <AppButton
-                        width={128}
-                        height={40}
-                        type="button"
-                        onClick={this.onCreateGameClick}
-                        disabled={shouldBlockActions}
-                    >
-                        {appPageTranslations[Languages.EN].games.create}
-                    </AppButton>
-                </AppPageStyledSubPageHeading>
+                <AppPageGameNav
+                    shouldBlockActions={shouldBlockActions}
+                    onCreateGameClick={this.onCreateGameClick}
+                    onFilterChange={this.onFilterChange}
+                    selectedFilter={gamesFilter}
+                />
                 <AppPageStyledSubPageGamesContentWrapper>
                     {
                         isFetchingGames ?
@@ -125,6 +127,10 @@ class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
         if (!isFetchingGames && !isCreatingGame) {
             createGame();
         }
+    }
+    @boundMethod
+    private onFilterChange(value: GamesFilter): void {
+        this.props.changeFilter(value);
     }
     private renderGames(): React.ReactNode {
         const {

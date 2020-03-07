@@ -3,3 +3,8 @@ export enum GameStates {
     ACTIVE = 'active',
     FINISHED = 'finished',
 }
+export enum GamesFilter {
+    User = 'USER',
+    Vacant = 'VACANT',
+    All = 'ALL',
+}

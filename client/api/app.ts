@@ -7,6 +7,9 @@ export function createGame(): Promise<AxiosResponse<GameDataWithPlayerNames>> {
 export function fetchGames(): Promise<AxiosResponse<Array<GameDataWithPlayerNames>>> {
     return axios.get('/dashboard/user_games');
 }
+export function fetchUserAndVacantGames(): Promise<AxiosResponse<Array<GameDataWithPlayerNames>>> {
+    return axios.get('/dashboard/user_vacant_games');
+}
 export function fetchUserSettings(): Promise<AxiosResponse<UserData>> {
     return axios.get('/user_data');
 }

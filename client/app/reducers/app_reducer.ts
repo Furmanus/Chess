@@ -12,12 +12,14 @@ import {
     APP_FETCH_USER_SETTINGS,
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
+    APP_FILTER_CHANGE,
     APP_LOGOUT,
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
 } from '../constants/app_actions';
 import {GameDataWithPlayerNames, LoggedUsers, UserData,} from '../../../common/interfaces/game_interfaces';
 import {UserTableFields} from '../../../server/enums/database';
+import {GamesFilter} from '../constants/app_games';
 
 export interface AppStore {
     games: GameDataWithPlayerNames[];
@@ -25,6 +27,7 @@ export interface AppStore {
     isCreatingGame: boolean;
     isFetchingSettings: boolean;
     isFetchingUsers: boolean;
+    gamesFilter: GamesFilter;
     userSettings: UserData;
     activeUsers: LoggedUsers;
 }
@@ -35,6 +38,7 @@ const initialState: AppStore = {
     isCreatingGame: false,
     isFetchingSettings: false,
     isFetchingUsers: false,
+    gamesFilter: GamesFilter.User,
     userSettings: null,
     activeUsers: {},
 };
@@ -140,6 +144,11 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             return {
                 ...state,
                 activeUsers: userListRemoveCopy,
+            };
+        case APP_FILTER_CHANGE:
+            return {
+                ...state,
+                gamesFilter: action.gamesFilter,
             };
         default:
             return {

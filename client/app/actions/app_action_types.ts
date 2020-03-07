@@ -11,6 +11,7 @@ import {
     APP_FETCH_USER_SETTINGS,
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
+    APP_FILTER_CHANGE,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -22,6 +23,7 @@ import {
     LoggedUsers,
     UserData,
 } from '../../../common/interfaces/game_interfaces';
+import {GamesFilter} from '../constants/app_games';
 
 interface LogoutAction {
     type: typeof APP_LOGOUT;
@@ -80,6 +82,10 @@ interface RemoveUserFromActiveUsers {
     type: typeof APP_USER_DISCONNECTED;
     userId: string;
 }
+interface ChangeFilter {
+    type: typeof APP_FILTER_CHANGE;
+    gamesFilter: GamesFilter;
+}
 
 export type AppActionTypes =
     LogoutAction |
@@ -98,4 +104,5 @@ export type AppActionTypes =
     FetchActiveUsersSuccess |
     FetchActiveUsersFailure |
     AddUserToActiveUsers |
-    RemoveUserFromActiveUsers;
+    RemoveUserFromActiveUsers |
+    ChangeFilter;
