@@ -3,7 +3,6 @@ import {AppPageStyledSubPageHeading} from '../../styled/games/AppPageStyledSubPa
 import {AppButton} from '../../../common/components/AppButton';
 import {appPageTranslations, Languages} from '../../constants/app_translations';
 import {GamesFilter} from '../../constants/app_games';
-import 'antd/es/select/style/index.css';
 import {AppSelect} from '../../../common/components/AppSelect';
 
 interface AppPageGameNavProps {
