@@ -17,6 +17,7 @@ router.get('/dashboard/user_games', getUserGamesHandler);
 router.get('/dashboard/user_vacant_games', getUserOrVacantGamesHandler);
 router.get('/dashboard/active_users', getConnectedUsers);
 router.post('/dashboard/user_games', createGameRequestHandler);
+router.put('/dashboard/join_game', joinGameRequestHandler);
 router.post('/logout', (req: CustomRequest, res: Response) => {
     req.session.destroy((err) => {
         if (err) {
@@ -91,7 +92,33 @@ async function getUserOrVacantGamesHandler(req: CustomRequest, res: Response): P
     }
 }
 function getConnectedUsers(req: CustomRequest, res: Response): void {
+
     res.status(200).send(sockerHelper.getLoggedUsers());
+}
+async function joinGameRequestHandler(req: CustomRequest<{gameId: number}>, res: Response): Promise<void> {
+    const {
+        session,
+        body,
+    } = req;
+    const {
+        gameId,
+    } = body;
+    const {
+        user: userId,
+    } = session;
+
+    try {
+        const updatedGame = await databaseHelper.joinUserToGame(userId, gameId);
+
+        if (updatedGame) {
+            res.status(200).send(updatedGame);
+        } else {
+            res.status(400).end();
+        }
+    } catch {
+        // TODO improve error handling
+        res.status(500).end();
+    }
 }
 
 export {router as dashboardRouter};

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {LoggedUsers} from '../../../../common/interfaces/game_interfaces';
+import {LoggedUsersClient} from '../../../../common/interfaces/game_interfaces';
 import {AppPageStyledUserListWrapper} from '../../styled/users/AppPageStyledUserListWrapper';
 import {AppPageStyledList} from '../../styled/users/AppPageStyledUserList';
 import {AppPageUserListItem} from './AppPageUserListItem';
 import {boundMethod} from 'autobind-decorator';
 
 interface AppPageUserListProps {
-    users: LoggedUsers;
+    users: LoggedUsersClient;
 }
 
 export class AppPageUserList extends React.Component<AppPageUserListProps, {}> {

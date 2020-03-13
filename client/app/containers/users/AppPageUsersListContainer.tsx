@@ -5,11 +5,11 @@ import {AppPageStyledSubPageHeading} from '../../styled/games/AppPageStyledSubPa
 // @ts-ignore
 import * as Fade from 'react-reveal/Fade';
 import {AppPageStyledUsersContentWrapper} from '../../styled/users/AppPageStyledUsersContentWrapper';
-import {LoggedUsers} from '../../../../common/interfaces/game_interfaces';
+import {LoggedUsersClient} from '../../../../common/interfaces/game_interfaces';
 import {AppPageUserList} from '../../components/users/AppPageUserList';
 
 interface StateProps {
-    activeUsers: LoggedUsers;
+    activeUsers: LoggedUsersClient;
 }
 
 function mapStateToProps(state: AppStore): StateProps {

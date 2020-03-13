@@ -13,6 +13,8 @@ import {
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_FILTER_CHANGE,
+    APP_GAME_DATA_CHANGED,
+    APP_JOIN_USER_TO_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -30,8 +32,14 @@ import {
     fetchUserAndVacantGames as fetchGamesApi,
     fetchUserSettings as fetchUserSettingsApi,
 } from '../../api/app';
-import {GameDataWithPlayerNames, LoggedUsers, UserData} from '../../../common/interfaces/game_interfaces';
+import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
+import {socketManager} from '../utils/socket';
+import {SocketGameDataChangedData} from '../../../common/interfaces/socket_event_data_types';
+import {
+    showGameCreatedNotification,
+    showPlayerJoinedGameNotification,
+} from '../utils/notifications';
 
 export function logout(): ThunkAction<void, AppStore, null, Action<string>> {
     return async (dispatch: Dispatch) => {
@@ -77,6 +85,8 @@ export function createGame(): AppThunkAction {
     };
 }
 export function createGameSuccess(gameData: GameDataWithPlayerNames): AppActionTypes {
+    showGameCreatedNotification();
+
     return {
         type: APP_CREATE_GAME_SUCCESS,
         createdGame: gameData,
@@ -154,7 +164,7 @@ export function fetchActiveUsers(): AppThunkAction {
         }
     };
 }
-export function fetchActiveUsersSuccess(activeUsers: LoggedUsers): AppActionTypes {
+export function fetchActiveUsersSuccess(activeUsers: LoggedUsersClient): AppActionTypes {
     return {
         type: APP_FETCH_ACTIVE_USERS_SUCCESS,
         activeUsers,
@@ -182,4 +192,26 @@ export function changeFilter(value: GamesFilter): AppActionTypes {
         type: APP_FILTER_CHANGE,
         gamesFilter: value,
     };
+}
+export function joinUserToGame(userId: number, gameId: number): AppActionTypes {
+    socketManager.emitPlayerJoinedToGameEvent(userId, gameId);
+
+    return {
+        type: APP_JOIN_USER_TO_GAME,
+    };
+}
+export function changeGameData(data: SocketGameDataChangedData, showNotification: boolean): AppActionTypes {
+    const {
+        gameData,
+        reason,
+    } = data;
+
+    if (showNotification) {
+        showPlayerJoinedGameNotification(gameData.player2Name);
+    }
+
+    return {
+        type: APP_GAME_DATA_CHANGED,
+        updatedGame: gameData,
+    }
 }

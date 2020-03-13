@@ -1,5 +1,5 @@
-import {Sequelize, Op} from 'sequelize';
-import {User, initializeUser} from '../models/users';
+import {Op, Sequelize} from 'sequelize';
+import {initializeUser, User} from '../models/users';
 import {Game, initializeGames} from '../models/games';
 import {encrypt} from './crypto';
 import {GameTableFields} from '../enums/database';
@@ -59,6 +59,42 @@ class DatabaseHelperClass {
                 login: name,
             },
         });
+    }
+    public async getGameById(gameId: number): Promise<GameData> {
+        const gameData = await Game.findOne({
+            where: {
+                id: gameId,
+            },
+        });
+
+        return {
+            ...gameData.dataValues,
+        };
+    }
+    public async joinUserToGame(userId: number, gameId: number): Promise<GameData> {
+        const gameData = await this.getGameById(gameId);
+
+        if (gameData[GameTableFields.PLAYER2_ID] === null && gameData[GameTableFields.PLAYER1_ID] !== userId) {
+            const update = await Game.update({
+                [GameTableFields.PLAYER2_ID]: userId,
+            }, {
+                where: {
+                    [GameTableFields.ID]: gameId,
+                },
+            });
+
+            if (update[0] > 0) {
+                const updatedGame = await this.getGameByIdWithUsers(gameId);
+
+                return {
+                    ...updatedGame.dataValues,
+                    player1Name: updatedGame.player1?.dataValues?.login,
+                    player2Name: updatedGame.player2?.dataValues?.login,
+                };
+            }
+            throw new Error('Failed to update game data');
+        }
+        return null;
     }
     public getGameByIdWithUsers(gameId: number): any {
         return Game.findOne({

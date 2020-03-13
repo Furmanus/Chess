@@ -13,12 +13,14 @@ import {
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
     APP_FILTER_CHANGE,
+    APP_GAME_DATA_CHANGED,
+    APP_JOIN_USER_TO_GAME,
     APP_LOGOUT,
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
 } from '../constants/app_actions';
-import {GameDataWithPlayerNames, LoggedUsers, UserData,} from '../../../common/interfaces/game_interfaces';
-import {UserTableFields} from '../../../server/enums/database';
+import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
+import {GameTableFields, UserTableFields} from '../../../server/enums/database';
 import {GamesFilter} from '../constants/app_games';
 
 export interface AppStore {
@@ -27,9 +29,10 @@ export interface AppStore {
     isCreatingGame: boolean;
     isFetchingSettings: boolean;
     isFetchingUsers: boolean;
+    hasJoinToGameProcessStarted: boolean;
     gamesFilter: GamesFilter;
     userSettings: UserData;
-    activeUsers: LoggedUsers;
+    activeUsers: LoggedUsersClient;
 }
 
 const initialState: AppStore = {
@@ -37,6 +40,7 @@ const initialState: AppStore = {
     isLoadingGames: false,
     isCreatingGame: false,
     isFetchingSettings: false,
+    hasJoinToGameProcessStarted: false,
     isFetchingUsers: false,
     gamesFilter: GamesFilter.User,
     userSettings: null,
@@ -44,6 +48,8 @@ const initialState: AppStore = {
 };
 
 export function appReducer(state = initialState, action: AppActionTypes): AppStore {
+    let gamesCopy;
+
     switch (action.type) {
         case APP_LOGOUT:
         case APP_CREATE_GAME:
@@ -55,7 +61,7 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             const {
                 createdGame,
             } = action;
-            const gamesCopy = Array.from(state.games);
+            gamesCopy = Array.from(state.games);
 
             gamesCopy.push(createdGame);
 
@@ -149,6 +155,27 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             return {
                 ...state,
                 gamesFilter: action.gamesFilter,
+            };
+        case APP_JOIN_USER_TO_GAME:
+            return {
+                ...state,
+                hasJoinToGameProcessStarted: true,
+            };
+        case APP_GAME_DATA_CHANGED:
+            const {
+                updatedGame,
+            } = action;
+            gamesCopy = Array.from(state.games);
+
+            gamesCopy.forEach((game, index) => {
+                if (game[GameTableFields.ID] === updatedGame[GameTableFields.ID]) {
+                    gamesCopy[index] = updatedGame;
+                }
+            });
+
+            return {
+                ...state,
+                games: gamesCopy,
             };
         default:
             return {

@@ -11,7 +11,7 @@ import {
     APP_FETCH_USER_SETTINGS,
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
-    APP_FILTER_CHANGE,
+    APP_FILTER_CHANGE, APP_GAME_DATA_CHANGED, APP_JOIN_USER_TO_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -19,8 +19,7 @@ import {
     APP_USER_JOINED,
 } from '../constants/app_actions';
 import {
-    GameDataWithPlayerNames,
-    LoggedUsers,
+    GameDataWithPlayerNames, LoggedUsersClient,
     UserData,
 } from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
@@ -69,7 +68,7 @@ interface FetchActiveUsers {
 }
 interface FetchActiveUsersSuccess {
     type: typeof APP_FETCH_ACTIVE_USERS_SUCCESS;
-    activeUsers: LoggedUsers;
+    activeUsers: LoggedUsersClient;
 }
 interface FetchActiveUsersFailure {
     type: typeof APP_FETCH_ACTIVE_USERS_FAILURE;
@@ -85,6 +84,13 @@ interface RemoveUserFromActiveUsers {
 interface ChangeFilter {
     type: typeof APP_FILTER_CHANGE;
     gamesFilter: GamesFilter;
+}
+interface JoinUserToGame {
+    type: typeof APP_JOIN_USER_TO_GAME;
+}
+interface GameDataChanged {
+    type: typeof APP_GAME_DATA_CHANGED;
+    updatedGame: GameDataWithPlayerNames,
 }
 
 export type AppActionTypes =
@@ -105,4 +111,6 @@ export type AppActionTypes =
     FetchActiveUsersFailure |
     AddUserToActiveUsers |
     RemoveUserFromActiveUsers |
-    ChangeFilter;
+    ChangeFilter |
+    JoinUserToGame |
+    GameDataChanged;

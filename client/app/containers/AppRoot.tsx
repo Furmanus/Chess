@@ -2,6 +2,8 @@ import * as React from 'react';
 import {createGlobalStyle, ThemeProvider} from 'styled-components';
 import {AppPage} from './AppPage';
 import {theme} from '../../common/theme/theme';
+// @ts-ignore
+import ReactNotification from 'react-notifications-component';
 import {Provider} from 'react-redux';
 import {applyMiddleware, createStore} from 'redux';
 import {appReducer} from '../reducers/app_reducer';
@@ -18,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const store = createStore(appReducer, applyMiddleware(...middlewares));
 
-socketManager.initialize(store.dispatch);
+socketManager.initialize(store.dispatch, store.getState);
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -47,6 +49,7 @@ export class AppRoot extends React.Component<{}, {}> {
             <Provider store={store}>
                 <ThemeProvider theme={theme}>
                     <React.Fragment>
+                        <ReactNotification/>
                         <BrowserRouter>
                             <AppPage/>
                         </BrowserRouter>

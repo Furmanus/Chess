@@ -1,5 +1,6 @@
 import {PlayerColors, ChessPieces} from '../helpers/game_helper';
 import {GameTableFields, UserTableFields} from '../../server/enums/database';
+import {Socket} from 'socket.io';
 
 export interface Figure {
     type: ChessPieces;
@@ -37,6 +38,13 @@ export interface UserData {
     id: number;
     login: string;
 }
-export interface LoggedUsers {
+export interface LoggedUsersClient {
     [id: number]: string;
+}
+export interface LoggedUsers {
+    [id: number]: LoggedUserData;
+}
+export interface LoggedUserData{
+    name: string;
+    socket: Socket;
 }
