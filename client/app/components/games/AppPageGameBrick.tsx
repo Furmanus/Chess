@@ -1,12 +1,13 @@
 import * as React from 'react';
-import {SyntheticEvent} from 'react';
 import {AppPageStyledGameBrickWrapper} from '../../styled/games/AppPageStyledGameBrickWrapper';
 import {GameDataWithPlayerNames} from '../../../../common/interfaces/game_interfaces';
 import {translate} from '../../utils/utils';
 import {appPageTranslations, Languages} from '../../constants/app_translations';
-import {AppButton} from '../../../common/components/AppButton';
 import {AppPageStyledGameBrickTurnReadyElement} from '../../styled/games/AppPageStyledGameBrickTurnReadyElement';
 import {boundMethod} from 'autobind-decorator';
+import {AppStyledSpan} from '../../../common/styled/AppStyledSpan';
+import {AppPageGameBrickButton} from './AppPageGameBrickButton';
+import {GameTableFields} from '../../../../server/enums/database';
 
 interface AppPageBrickProps {
     data: GameDataWithPlayerNames;
@@ -22,26 +23,19 @@ export class AppPageGameBrick extends React.Component<AppPageBrickProps, {}> {
             disabled,
             turnReady,
             isCurrentUserGame,
+            data,
         } = this.props;
 
         return (
             <AppPageStyledGameBrickWrapper>
                 {turnReady && this.renderReadyTurnBrick()}
                 {this.renderPlayers()}
-                <AppButton
-                    type="button"
-                    width={118}
-                    height={36}
-                    fontSize='submedium'
-                    variation='ghost'
+                <AppPageGameBrickButton
+                    gameId={data[GameTableFields.ID]}
                     disabled={disabled}
+                    isCurrentUserGame={isCurrentUserGame}
                     onClick={this.onButtonClick}
-                >
-                    {isCurrentUserGame ?
-                        appPageTranslations[Languages.EN].games.gameBox.button.userGame :
-                        appPageTranslations[Languages.EN].games.gameBox.button.vacantGame
-                    }
-                </AppButton>
+                />
             </AppPageStyledGameBrickWrapper>
         );
     }
@@ -63,9 +57,13 @@ export class AppPageGameBrick extends React.Component<AppPageBrickProps, {}> {
 
         return (
             <div className="players">
-                <span>{player1Name}</span>
+                <AppStyledSpan fontWeight="bold" fontSize="submedium">
+                    {player1Name}
+                </AppStyledSpan>
                 <span>vs</span>
-                <span>{player2Name}</span>
+                <AppStyledSpan fontWeight="bold" fontSize="submedium">
+                    {player2Name}
+                </AppStyledSpan>
             </div>
         );
     }
@@ -81,8 +79,11 @@ export class AppPageGameBrick extends React.Component<AppPageBrickProps, {}> {
         const {
             onButtonClick,
             data,
+            isCurrentUserGame,
         } = this.props;
 
-        onButtonClick(data);
+        if (!isCurrentUserGame) {
+            onButtonClick(data);
+        }
     }
 }

@@ -17,7 +17,11 @@ class SocketHelper {
     }
     public getLoggedUsers(): LoggedUsersClient {
         return Object.keys(loggedUsers).reduce((result: LoggedUsersClient, previous: string) => {
-            result[parseInt(previous, 10)] = loggedUsers[parseInt(previous, 10)].name;
+            const userData = loggedUsers[parseInt(previous, 10)];
+
+            if (userData) {
+                result[parseInt(previous, 10)] = userData.name;
+            }
 
             return result;
         }, {});

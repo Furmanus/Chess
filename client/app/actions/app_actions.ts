@@ -6,6 +6,9 @@ import {
     APP_FETCH_ACTIVE_USERS,
     APP_FETCH_ACTIVE_USERS_FAILURE,
     APP_FETCH_ACTIVE_USERS_SUCCESS,
+    APP_FETCH_GAME_DATA,
+    APP_FETCH_GAME_DATA_FAILURE,
+    APP_FETCH_GAME_DATA_SUCCESS,
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
@@ -18,6 +21,7 @@ import {
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
+    APP_NAVIGATE_TO_GAME,
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
 } from '../constants/app_actions';
@@ -31,15 +35,13 @@ import {
     fetchActiveUsers as fetchActiveUsersApi,
     fetchUserAndVacantGames as fetchGamesApi,
     fetchUserSettings as fetchUserSettingsApi,
+    fetchGameData as fetchGameDataApi,
 } from '../../api/app';
 import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
 import {socketManager} from '../utils/socket';
 import {SocketGameDataChangedData} from '../../../common/interfaces/socket_event_data_types';
-import {
-    showGameCreatedNotification,
-    showPlayerJoinedGameNotification,
-} from '../utils/notifications';
+import {showGameCreatedNotification, showPlayerJoinedGameNotification,} from '../utils/notifications';
 
 export function logout(): ThunkAction<void, AppStore, null, Action<string>> {
     return async (dispatch: Dispatch) => {
@@ -214,4 +216,36 @@ export function changeGameData(data: SocketGameDataChangedData, showNotification
         type: APP_GAME_DATA_CHANGED,
         updatedGame: gameData,
     }
+}
+export function navigateToGame(gameId: number): AppActionTypes {
+    return {
+        type: APP_NAVIGATE_TO_GAME,
+        gameId,
+    }
+}
+export function fetchGameData(gameId: number): AppThunkAction {
+    return async (dispatch: Dispatch) => {
+        dispatch({
+            type: APP_FETCH_GAME_DATA,
+        });
+
+        try {
+            const response = await fetchGameDataApi(gameId);
+
+            dispatch(fetchGameDataSuccess(response.data));
+        } catch(error) {
+            dispatch(fetchGameDataFailure());
+        }
+    };
+}
+function fetchGameDataSuccess(gameData: GameDataWithPlayerNames): AppActionTypes {
+    return {
+        type: APP_FETCH_GAME_DATA_SUCCESS,
+        gameData,
+    };
+}
+function fetchGameDataFailure(): AppActionTypes {
+    return {
+        type: APP_FETCH_GAME_DATA_FAILURE,
+    };
 }

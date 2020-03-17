@@ -5,16 +5,22 @@ import {
     APP_FETCH_ACTIVE_USERS,
     APP_FETCH_ACTIVE_USERS_FAILURE,
     APP_FETCH_ACTIVE_USERS_SUCCESS,
+    APP_FETCH_GAME_DATA,
+    APP_FETCH_GAME_DATA_FAILURE,
+    APP_FETCH_GAME_DATA_SUCCESS,
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
     APP_FETCH_USER_SETTINGS,
     APP_FETCH_USER_SETTINGS_FAILURE,
     APP_FETCH_USER_SETTINGS_SUCCESS,
-    APP_FILTER_CHANGE, APP_GAME_DATA_CHANGED, APP_JOIN_USER_TO_GAME,
+    APP_FILTER_CHANGE,
+    APP_GAME_DATA_CHANGED,
+    APP_JOIN_USER_TO_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
+    APP_NAVIGATE_TO_GAME,
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
 } from '../constants/app_actions';
@@ -92,6 +98,20 @@ interface GameDataChanged {
     type: typeof APP_GAME_DATA_CHANGED;
     updatedGame: GameDataWithPlayerNames,
 }
+interface NavigateToGame {
+    type: typeof APP_NAVIGATE_TO_GAME;
+    gameId: number;
+}
+interface FetchGameData {
+    type: typeof APP_FETCH_GAME_DATA;
+}
+interface FetchGameDataSuccess {
+    type: typeof APP_FETCH_GAME_DATA_SUCCESS;
+    gameData: GameDataWithPlayerNames;
+}
+interface FetchGameDataFailure {
+    type: typeof APP_FETCH_GAME_DATA_FAILURE;
+}
 
 export type AppActionTypes =
     LogoutAction |
@@ -113,4 +133,8 @@ export type AppActionTypes =
     RemoveUserFromActiveUsers |
     ChangeFilter |
     JoinUserToGame |
-    GameDataChanged;
+    GameDataChanged |
+    NavigateToGame |
+    FetchGameData |
+    FetchGameDataSuccess |
+    FetchGameDataFailure;

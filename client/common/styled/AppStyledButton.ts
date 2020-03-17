@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import {FontSize, StyledProps} from '../interfaces/styled';
+import {StyledProps} from '../interfaces/styled';
+import {Link} from 'react-router-dom';
 
 interface AppButtonProps {
     readonly width?: number;
     readonly height?: number;
     readonly marginTop?: number;
-    readonly fontSize?: FontSize;
+    readonly fontSize?: 'subsmall' | 'small' | 'submedium' | 'medium' | 'large';
     readonly variation?: 'normal' | 'ghost';
     readonly disabled?: boolean;
 }
@@ -79,24 +80,35 @@ function getCursor(props: StyledProps<AppButtonProps>): string {
     }
     return 'pointer';
 }
+
+function getStylesCssText(props: StyledProps<AppButtonProps>, isHistoryLink: boolean = false): string {
+    return `
+        width: ${props.width ? `${props.width}px` : '100%'};
+        height: ${props.height ? `${props.height}px` : '56px'};
+        border-radius: 8px;
+        text-transform: uppercase;
+        ${props.marginTop ? `margin-top: ${props.marginTop}px;` : ''}
+        font-weight: ${props.theme.font.weight.bold};
+        font-size: ${props.theme.font.size.medium};
+        color: ${getColor(props)};
+        background-color: ${getBackgroundColor(props)};
+        border: none;
+        outline: none;
+        transition: all 0.3s ease-in-out;
+        font-size: ${getFontSize(props)}px;
+        ${isHistoryLink ? 'display: flex; align-items: center; justify-content: center; text-decoration: none' : ''}
+        
+        &:hover {
+            color: ${getHoverColor(props)};
+            background-color: ${getHoverBackgroundColor(props)};
+            cursor: ${getCursor(props)};
+        }
+    `;
+}
+
 export const AppStyledButton = styled.button<AppButtonProps>`
-    width: ${(props) => props.width ? `${props.width}px` : '100%'};
-    height: ${(props) => props.height ? `${props.height}px` : '56px'};
-    border-radius: 8px;
-    text-transform: uppercase;
-    ${(props) => props.marginTop ? `margin-top: ${props.marginTop}px;` : ''}
-    font-weight: ${(props) => props.theme.font.weight.bold};
-    font-size: ${(props) => props.theme.font.size.medium};
-    color: ${(props) => getColor(props)};
-    background-color: ${(props) => getBackgroundColor(props)};
-    border: none;
-    outline: none;
-    transition: all 0.3s ease-in-out;
-    font-size: ${(props) => getFontSize(props)}px;
-    
-    &:hover {
-        color: ${(props) => getHoverColor(props)};
-        background-color: ${(props) => getHoverBackgroundColor(props)};
-        cursor: ${(props) => getCursor(props)};
-    }
+    ${(props) => getStylesCssText(props)};
+`;
+export const AppStyledHistoryLink = styled(Link)<any>`
+    ${(props) => getStylesCssText(props, true)};
 `;

@@ -11,6 +11,10 @@ const englishTranslations = {
     games: {
         create: 'create',
         emptyState: 'No games found',
+        players: {
+            white: 'white',
+            black: 'black',
+        },
         gameBox: {
             onlyFirstPlayer: '{{player1}} is waiting for opponent',
             button: {

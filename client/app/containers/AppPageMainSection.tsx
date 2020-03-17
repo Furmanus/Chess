@@ -5,21 +5,29 @@ import {AppPageStyledMainSectionWrapper} from '../styled/AppPageStyledMainSectio
 import {AppPageGamesContainer} from './games/AppPageGamesContainer';
 import {AppPageUserListContainer} from './users/AppPageUsersListContainer';
 import {AppSettingsListContainer} from './settings/AppPageSettingsContainer';
+import {AppPageGameBoard} from './game_board/AppPageGameBoard';
 
 export class AppPageMainSection extends React.Component<{}, {}> {
     public render(): React.ReactNode {
         return (
             <AppPageStyledMainSectionWrapper>
                 <Switch>
-                    <Route path={AppRoutes.GAMES}>
-                        <AppPageGamesContainer/>
-                    </Route>
-                    <Route path={AppRoutes.SETTINGS}>
-                        <AppSettingsListContainer/>
-                    </Route>
-                    <Route path={AppRoutes.USERS}>
-                        <AppPageUserListContainer/>
-                    </Route>
+                    <Route
+                        path={AppRoutes.GAMES}
+                        component={AppPageGamesContainer}
+                    />
+                    <Route
+                        path={AppRoutes.SETTINGS}
+                        component={AppSettingsListContainer}
+                    />
+                    <Route
+                        path={AppRoutes.USERS}
+                        component={AppPageUserListContainer}
+                    />
+                    <Route
+                        path={`${AppRoutes.BOARD}/:gameId`}
+                        component={AppPageGameBoard}
+                    />
                 </Switch>
             </AppPageStyledMainSectionWrapper>
         );

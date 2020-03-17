@@ -84,25 +84,25 @@ class DatabaseHelperClass {
             });
 
             if (update[0] > 0) {
-                const updatedGame = await this.getGameByIdWithUsers(gameId);
-
-                return {
-                    ...updatedGame.dataValues,
-                    player1Name: updatedGame.player1?.dataValues?.login,
-                    player2Name: updatedGame.player2?.dataValues?.login,
-                };
+                return this.getGameByIdWithUsers(gameId);
             }
             throw new Error('Failed to update game data');
         }
         return null;
     }
-    public getGameByIdWithUsers(gameId: number): any {
-        return Game.findOne({
+    public async getGameByIdWithUsers(gameId: number): Promise<GameDataWithPlayerNames> {
+        const result = await Game.findOne({
             where: {
                 id: gameId,
             },
             include: ['player1', 'player2'],
         });
+
+        return {
+            ...result.dataValues,
+            player1Name: result.player1?.dataValues?.login,
+            player2Name: result.player2?.dataValues?.login,
+        };
     }
     public async getUserGames(userId: number): Promise<GameDataWithPlayerNames[]> {
         const userGames = await Game.findAll({

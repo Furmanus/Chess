@@ -4,6 +4,7 @@ import {CustomRequest} from '../interfaces/express_types';
 import {databaseHelper} from '../utils/database';
 import {GameTableFields} from '../enums/database';
 import {sockerHelper} from '../helpers/socket_helper';
+import {GameDataWithPlayerNames} from '../../common/interfaces/game_interfaces';
 
 const router = express.Router();
 
@@ -13,6 +14,8 @@ router.get('/dashboard', (req: CustomRequest, res: Response) => {
 router.get('/dashboard/games', dashboardRequestHandler);
 router.get('/dashboard/settings', dashboardRequestHandler);
 router.get('/dashboard/users', dashboardRequestHandler);
+router.get('/game/:gameId', dashboardGameBoardHandler);
+router.get('/game_data/:gameId', getGameDataHandler);
 router.get('/dashboard/user_games', getUserGamesHandler);
 router.get('/dashboard/user_vacant_games', getUserOrVacantGamesHandler);
 router.get('/dashboard/active_users', getConnectedUsers);
@@ -44,11 +47,10 @@ async function createGameRequestHandler(req: CustomRequest, res: Response): Prom
     try {
         const gameData = await databaseHelper.createGame(session.user);
         const fullGameData = await databaseHelper.getGameByIdWithUsers(gameData[GameTableFields.ID]);
-        const player1Data = fullGameData?.player1?.dataValues;
 
         res.status(200).send({
             ...gameData,
-            player1Name: player1Data.login,
+            player1Name: fullGameData.player1Name,
         });
     } catch(e) {
         console.error(e);
@@ -118,6 +120,35 @@ async function joinGameRequestHandler(req: CustomRequest<{gameId: number}>, res:
     } catch {
         // TODO improve error handling
         res.status(500).end();
+    }
+}
+async function dashboardGameBoardHandler(req: CustomRequest<{}, {gameId: string}>, res: Response): Promise<void> {
+    if (req.session.user) {
+        res.render('app');
+    } else {
+        res.redirect('/login');
+    }
+}
+async function getGameDataHandler(req: CustomRequest<{}, {gameId: string}>, res: Response): Promise<void> {
+    const userId = req.session.user;
+    const gameId = Number(req?.params?.gameId);
+
+    if (gameId) {
+        try {
+            const userGames = await databaseHelper.getUserGames(Number(userId));
+            const gameData = userGames.find((game: GameDataWithPlayerNames) => gameId === game[GameTableFields.ID]);
+
+            if (gameData) {
+                res.status(200).send(gameData);
+            } else {
+                res.status(404).end();
+            }
+        } catch (e) {
+            res.status(500).end();
+        }
+    } else {
+        // TODO better error handling
+        res.status(400).end();
     }
 }
 

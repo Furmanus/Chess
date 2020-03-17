@@ -3,7 +3,7 @@ import {AppPageStyledSubPageGamesContentWrapper} from '../../styled/games/AppPag
 // @ts-ignore
 import * as Fade from 'react-reveal/Fade';
 import {ThunkDispatch} from 'redux-thunk';
-import {changeFilter, createGame, fetchGames, joinUserToGame,} from '../../actions/app_actions';
+import {changeFilter, createGame, fetchGames, joinUserToGame, navigateToGame,} from '../../actions/app_actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {boundMethod} from 'autobind-decorator';
 import {AppStore} from '../../reducers/app_reducer';
@@ -23,6 +23,7 @@ interface DispatchProps {
     fetchGames: () => void
     changeFilter: (value: GamesFilter) => void;
     joinGame: (userId: number, gameId: number) => void;
+    navigateToGame: (gameId: number) => void;
 }
 interface StateProps {
     games: GameDataWithPlayerNames[];
@@ -54,6 +55,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps
         },
         joinGame: (userId: number, gameId: number) => {
             dispatch(joinUserToGame(userId, gameId));
+        },
+        navigateToGame: (gameId: number) => {
+            dispatch(navigateToGame(gameId));
         },
     };
 }
@@ -176,7 +180,6 @@ class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
         const {
             id: gameId,
         } = game;
-        const isUserGame = activeUserId === game[GameTableFields.PLAYER1_ID] || activeUserId === game[GameTableFields.PLAYER2_ID];
         const isVacantGame = activeUserId !== game[GameTableFields.PLAYER1_ID] && game[GameTableFields.PLAYER2_ID] === null;
 
         if (isVacantGame) {

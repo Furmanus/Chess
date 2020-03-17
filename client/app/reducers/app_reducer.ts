@@ -6,6 +6,9 @@ import {
     APP_FETCH_ACTIVE_USERS,
     APP_FETCH_ACTIVE_USERS_FAILURE,
     APP_FETCH_ACTIVE_USERS_SUCCESS,
+    APP_FETCH_GAME_DATA,
+    APP_FETCH_GAME_DATA_FAILURE,
+    APP_FETCH_GAME_DATA_SUCCESS,
     APP_FETCH_GAMES,
     APP_FETCH_GAMES_FAILURE,
     APP_FETCH_GAMES_SUCCESS,
@@ -25,6 +28,8 @@ import {GamesFilter} from '../constants/app_games';
 
 export interface AppStore {
     games: GameDataWithPlayerNames[];
+    activeGame: GameDataWithPlayerNames;
+    isFetchingActiveGame: boolean;
     isLoadingGames: boolean;
     isCreatingGame: boolean;
     isFetchingSettings: boolean;
@@ -37,6 +42,8 @@ export interface AppStore {
 
 const initialState: AppStore = {
     games: [],
+    activeGame: null,
+    isFetchingActiveGame: false,
     isLoadingGames: false,
     isCreatingGame: false,
     isFetchingSettings: false,
@@ -176,6 +183,22 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             return {
                 ...state,
                 games: gamesCopy,
+            };
+        case APP_FETCH_GAME_DATA:
+            return {
+                ...state,
+                isFetchingActiveGame: true,
+            };
+        case APP_FETCH_GAME_DATA_SUCCESS:
+            return {
+                ...state,
+                activeGame: action.gameData,
+                isFetchingActiveGame: false,
+            };
+        case APP_FETCH_GAME_DATA_FAILURE:
+            return {
+                ...state,
+                isFetchingActiveGame: false,
             };
         default:
             return {
