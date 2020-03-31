@@ -18,6 +18,7 @@ import {
     APP_FILTER_CHANGE,
     APP_GAME_DATA_CHANGED,
     APP_JOIN_USER_TO_GAME,
+    APP_LEAVE_GAME,
     APP_LOGOUT,
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
@@ -199,6 +200,11 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
             return {
                 ...state,
                 isFetchingActiveGame: false,
+            };
+        case APP_LEAVE_GAME:
+            return {
+                ...state,
+                activeGame: null,
             };
         default:
             return {

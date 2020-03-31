@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {GameDataWithPlayerNames} from '../../../../common/interfaces/game_interfaces';
 import {AppStore} from '../../reducers/app_reducer';
-import {fetchGameData} from '../../actions/app_actions';
+import {fetchGameData, leaveGame} from '../../actions/app_actions';
 import {ThunkDispatch} from 'redux-thunk';
 import {connect, ConnectedProps} from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -9,6 +9,7 @@ import {AppPageStyledSubPageHeading} from '../../styled/games/AppPageStyledSubPa
 import {AppPageStyledGameBoardContainer} from '../../styled/game_board/AppPageStyledGameBoardContainer';
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
+import {AppGameBoard} from '../../components/game_board/AppGameBoard';
 
 interface StateProps {
     isFetchingActiveGameData: boolean;
@@ -16,6 +17,7 @@ interface StateProps {
 }
 interface DispatchProps {
     fetchActiveGameData: (gameId: number) => void;
+    leaveGame: () => void;
 }
 interface MatchParams {
     gameId: string;
@@ -31,6 +33,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps
     return {
         fetchActiveGameData: (gameId: number) => {
             dispatch(fetchGameData(gameId));
+        },
+        leaveGame: () => {
+            dispatch(leaveGame());
         },
     };
 }
@@ -59,6 +64,11 @@ class AppPageGameBoardClass extends React.Component<ComponentProps, {}> {
                             height={150}
                         />
                     )}
+                    {Boolean(activeGame) && (
+                        <AppGameBoard
+                            gameData={activeGame}
+                        />
+                    )}
                 </AppPageStyledGameBoardContainer>
             </React.Fragment>
         );
@@ -70,6 +80,13 @@ class AppPageGameBoardClass extends React.Component<ComponentProps, {}> {
 
         fetchActiveGameData(Number(this.props.match.params.gameId));
     }
+    public componentWillUnmount(): void {
+        const {
+            leaveGame,
+        } = this.props;
+
+        leaveGame();
+    }
 }
 
-export const AppPageGameBoard = connector(AppPageGameBoardClass);
+export const AppPageGameBoardContainer = connector(AppPageGameBoardClass);

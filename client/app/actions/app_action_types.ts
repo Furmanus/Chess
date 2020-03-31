@@ -17,6 +17,7 @@ import {
     APP_FILTER_CHANGE,
     APP_GAME_DATA_CHANGED,
     APP_JOIN_USER_TO_GAME,
+     APP_LEAVE_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -112,6 +113,9 @@ interface FetchGameDataSuccess {
 interface FetchGameDataFailure {
     type: typeof APP_FETCH_GAME_DATA_FAILURE;
 }
+interface LeaveGame {
+    type: typeof APP_LEAVE_GAME;
+}
 
 export type AppActionTypes =
     LogoutAction |
@@ -137,4 +141,5 @@ export type AppActionTypes =
     NavigateToGame |
     FetchGameData |
     FetchGameDataSuccess |
-    FetchGameDataFailure;
+    FetchGameDataFailure |
+    LeaveGame;

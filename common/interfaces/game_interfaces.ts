@@ -48,3 +48,4 @@ export interface LoggedUserData{
     name: string;
     socket: Socket;
 }
+

@@ -40,6 +40,7 @@ app.set('views', path.resolve(rootDirectory, 'views'));
 app.set('view engine', 'pug');
 
 app.use('/dist', express.static('dist'));
+app.use('/assets', express.static('assets'));
 app.use(express.json());
 app.use(session);
 app.use(mainRouter);

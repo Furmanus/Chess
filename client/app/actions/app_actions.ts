@@ -18,6 +18,7 @@ import {
     APP_FILTER_CHANGE,
     APP_GAME_DATA_CHANGED,
     APP_JOIN_USER_TO_GAME,
+    APP_LEAVE_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -33,9 +34,9 @@ import {AppThunkAction} from '../interfaces/thunk';
 import {
     createGame as createGameApi,
     fetchActiveUsers as fetchActiveUsersApi,
+    fetchGameData as fetchGameDataApi,
     fetchUserAndVacantGames as fetchGamesApi,
     fetchUserSettings as fetchUserSettingsApi,
-    fetchGameData as fetchGameDataApi,
 } from '../../api/app';
 import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
@@ -247,5 +248,10 @@ function fetchGameDataSuccess(gameData: GameDataWithPlayerNames): AppActionTypes
 function fetchGameDataFailure(): AppActionTypes {
     return {
         type: APP_FETCH_GAME_DATA_FAILURE,
+    };
+}
+export function leaveGame(): AppActionTypes {
+    return {
+        type: APP_LEAVE_GAME,
     };
 }
