@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 import MaterialCreator = MTLLoader.MaterialCreator;
-import {Object3D} from 'three';
+import {Mesh, Object3D} from 'three';
 
 export interface Coordinates {
     x: number;
@@ -34,7 +34,7 @@ export function loadModel(url: string, materialUrl?: string): Promise<THREE.Obje
 
                 objectLoader.setMaterials(parsedMaterial);
                 objectLoader.load(url, (model) => {
-                    resolve(model);
+                    resolve(model.children[0]);
                 }, undefined, (err) => {
                     reject(err);
                 });
@@ -43,7 +43,7 @@ export function loadModel(url: string, materialUrl?: string): Promise<THREE.Obje
             });
         } else {
             new OBJLoader().load(url, (model) => {
-                resolve(model);
+                resolve(model.children[0]);
             }, undefined, (err) => {
                 reject(err);
             });
@@ -74,4 +74,15 @@ export function loadTexture(url: string): Promise<THREE.Texture> {
             reject(e);
         });
     });
+}
+export function highlightFigure(figure: THREE.Object3D): void {
+    // TODO get rid of those ts-ignores
+    // @ts-ignore
+    figure.userData.currentColor = figure.material.emissive.getHex();
+    // @ts-ignore
+    figure.material.emissive.setHex(0x0013ff);
+}
+export function removeFigureHighlight(figure: Object3D): void {
+    // @ts-ignore
+    figure.material.emissive.setHex(figure.userData.currentColor);
 }

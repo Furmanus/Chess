@@ -6,14 +6,15 @@ import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
 import {AppFullPageContainer} from '../../../common/styled/AppFullSizeContainer';
 import {boundMethod} from 'autobind-decorator';
 import {
-    getCoordinatesFromString,
+    getCoordinatesFromString, highlightFigure,
     loadModel,
     loadModels,
-    loadTexture,
+    loadTexture, removeFigureHighlight,
     translateBoardCoordsToScenePosition
 } from '../../game/utils';
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
+import {Object3D} from 'three';
 
 interface AppGameBoardProps {
     gameData: GameDataWithPlayerNames;
@@ -33,6 +34,10 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private figureModels: Array<THREE.Object3D>;
     private orbitControls: OrbitControls;
     private trackballControlls: TrackballControls;
+    private mouse: THREE.Vector2;
+    private raycaster: THREE.Raycaster;
+    private currentlyHighlightedObject: THREE.Object3D;
+    private isMouseClicked: boolean;
 
     public state = {
         isLoadingAssets: false,
@@ -60,15 +65,7 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         );
     }
     public async componentDidMount(): Promise<void> {
-        this.setState({
-            isLoadingAssets: true,
-        });
-
         await this.loadResources();
-
-        this.setState({
-            isLoadingAssets: false,
-        });
 
         this.initialize();
     }
@@ -85,6 +82,9 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
         this.renderer = new THREE.WebGLRenderer();
+        this.mouse = new THREE.Vector2();
+        this.raycaster = new THREE.Raycaster();
+        this.currentlyHighlightedObject = null;
 
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0xF2F4F7, 1);
@@ -100,21 +100,51 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     }
     private attachEvents(): void {
         window.addEventListener('resize', this.onWindowResize);
+        window.addEventListener('mousemove', this.onMouseMove);
     }
     private detachEvents(): void {
         window.removeEventListener('resize', this.onWindowResize);
+        window.removeEventListener('mousemove', this.onMouseMove);
     }
     @boundMethod
     private onWindowResize(): void {
-        this.renderer.setSize(this.element.current.clientWidth, this.element.current.clientHeight);
+        const currentWidth = this.element.current.clientWidth;
+        const currentHeight = this.element.current.clientHeight;
+
+        this.camera.updateProjectionMatrix();
+        this.camera.aspect = currentWidth / currentHeight;
+        this.renderer.setSize(currentWidth, currentHeight);
+    }
+    @boundMethod
+    private onMouseMove(e: MouseEvent): void {
+        const canvasBounds = (this.renderer.getContext().canvas as HTMLCanvasElement).getBoundingClientRect();
+
+        this.mouse.x = ((e.clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
+        this.mouse.y = -((e.clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
+    }
+    @boundMethod
+    private onMouseDown(e: MouseEvent): void {
+        this.isMouseClicked = true;
+    }
+    @boundMethod
+    private onMouseUp(e: MouseEvent): void {
+        this.isMouseClicked = false;
     }
     private createSceneObjects(): void {
         this.setCamera();
         this.addLights();
         this.setObjects();
     }
-    private loadResources(): Promise<[void, void, void]> {
-        return Promise.all([this.loadBoard(), this.loadTexture(), this.loadBoardModels()]);
+    private async loadResources(): Promise<void> {
+        this.setState({
+            isLoadingAssets: true,
+        });
+
+        await Promise.all([this.loadBoard(), this.loadTexture(), this.loadBoardModels()]);
+
+        this.setState({
+            isLoadingAssets: false,
+        });
     }
     private addLights(): void {
         const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.45);
@@ -132,7 +162,7 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private initializeScene(): void {
         this.scene.background = this.sceneTexture;
 
-        // this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
 
         this.trackballControlls = new TrackballControls(this.camera, this.renderer.domElement);
         this.trackballControlls.minDistance = 10;
@@ -155,7 +185,9 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         }
     }
     private async loadBoardModels(): Promise<void> {
-        this.figureModels = await loadModels();
+        const models = await loadModels();
+
+        this.figureModels = models;
     }
     private setObjects(): void {
         const [
@@ -196,12 +228,16 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
 
         Object.keys(game_data).forEach((coord) => {
             const figureData = game_data[coord];
-            const figure = figureAndColorToObjectMap[figureData.color][figureData.type];
+            const figure = figureAndColorToObjectMap[figureData.color][figureData.type] as THREE.Mesh;
             const coords = getCoordinatesFromString(coord);
-            const clonedFigure = figure.clone(true);
+            const clonedFigure = figure.clone(false);
             let boardCoords;
 
+            clonedFigure.material = (figure.material as THREE.Material).clone();
+
             clonedFigure.userData.center = new THREE.Box3().setFromObject(clonedFigure).getCenter(new THREE.Vector3());
+            clonedFigure.userData.name = `${figureData.color} ${figureData.type}`;
+            clonedFigure.userData.coords = coord;
 
             boardCoords = translateBoardCoordsToScenePosition(clonedFigure, coords);
             this.setFigurePosition(clonedFigure, boardCoords.x, boardCoords.y);
@@ -218,10 +254,48 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
 
         figure.position.set(scenePosition.x, scenePosition.y, 0);
     }
+    private calculateMouseMoveIntersections(): void {
+        const intersects = this.getMouseIntersectedObjects();
+        const {
+            currentlyHighlightedObject,
+        } = this;
+
+        if (intersects.length) {
+            const intersected = intersects[0].object;
+
+            if (intersected !== this.currentlyHighlightedObject) {
+                if (currentlyHighlightedObject) {
+                    removeFigureHighlight(currentlyHighlightedObject);
+                }
+                if (!intersected.userData.name) {
+                    return;
+                }
+
+                this.currentlyHighlightedObject = intersected;
+
+                highlightFigure(intersected);
+            }
+        } else {
+            if (currentlyHighlightedObject) {
+                removeFigureHighlight(currentlyHighlightedObject);
+            }
+
+            this.currentlyHighlightedObject = null;
+        }
+    }
+    private getMouseIntersectedObjects(): THREE.Intersection[] {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+
+        return this.raycaster.intersectObjects(this.scene.children);
+    }
     @boundMethod
     private renderScene(): void {
-        // this.orbitControls.update();
+        this.orbitControls.update();
         this.trackballControlls.update();
+        this.scene.children.forEach((obj: Object3D) => {
+            obj.updateMatrixWorld();
+        });
+        this.calculateMouseMoveIntersections();
         this.renderer.render(this.scene, this.camera);
         window.requestAnimationFrame(this.renderScene);
     }
