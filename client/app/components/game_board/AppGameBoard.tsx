@@ -40,7 +40,7 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private trackballControlls: TrackballControls;
     private mouse: THREE.Vector2;
     private raycaster: THREE.Raycaster;
-    private gameHelper: GameTable;
+    private gameTable: GameTable;
     /**
      * Object highlighted by mouse move event (mouse hover over object)
      */
@@ -77,7 +77,7 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         );
     }
     public async componentDidMount(): Promise<void> {
-        this.gameHelper = new GameTable(this.props.gameData[GameTableFields.GAME_DATA]);
+        this.gameTable = new GameTable(this.props.gameData[GameTableFields.GAME_DATA]);
 
         await this.loadResources();
 
@@ -190,7 +190,7 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         this.scene.add(directionalLight);
     }
     private setCamera(): void {
-        this.camera.position.set(0, -20, 30);
+        this.camera.position.set(0, 20, 30);
         this.camera.lookAt(0, 0, 0);
     }
     private initializeScene(): void {
@@ -326,9 +326,9 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private renderScene(): void {
         // this.orbitControls.update();
         // this.trackballControlls.update();
-        this.scene.children.forEach((obj: Object3D) => {
-            obj.updateMatrixWorld();
-        });
+        // this.scene.children.forEach((obj: Object3D) => {
+        //     obj.updateMatrixWorld();
+        // });
         this.calculateMouseMoveIntersections();
         this.renderer.render(this.scene, this.camera);
         window.requestAnimationFrame(this.renderScene);
