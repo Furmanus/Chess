@@ -1,20 +1,24 @@
 import * as React from 'react';
 import {GameDataWithPlayerNames} from '../../../../common/interfaces/game_interfaces';
 import * as THREE from 'three';
+import {Object3D} from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
 import {AppFullPageContainer} from '../../../common/styled/AppFullSizeContainer';
 import {boundMethod} from 'autobind-decorator';
 import {
-    getCoordinatesFromString, highlightFigure,
+    getCoordinatesFromString,
+    highlightFigure,
     loadModel,
     loadModels,
-    loadTexture, removeFigureHighlight,
+    loadTexture,
+    removeFigureHighlight,
     translateBoardCoordsToScenePosition
 } from '../../game/utils';
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
-import {Object3D} from 'three';
+import {GameTable} from '../../../../common/models/game_table';
+import {GameTableFields} from '../../../../server/enums/database';
 
 interface AppGameBoardProps {
     gameData: GameDataWithPlayerNames;
@@ -36,7 +40,15 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private trackballControlls: TrackballControls;
     private mouse: THREE.Vector2;
     private raycaster: THREE.Raycaster;
+    private gameHelper: GameTable;
+    /**
+     * Object highlighted by mouse move event (mouse hover over object)
+     */
     private currentlyHighlightedObject: THREE.Object3D;
+    /**
+     * Object selected by mouse click event
+     */
+    private selectedObject: THREE.Object3D;
     private isMouseClicked: boolean;
 
     public state = {
@@ -65,6 +77,8 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         );
     }
     public async componentDidMount(): Promise<void> {
+        this.gameHelper = new GameTable(this.props.gameData[GameTableFields.GAME_DATA]);
+
         await this.loadResources();
 
         this.initialize();
@@ -99,12 +113,24 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
         this.renderScene();
     }
     private attachEvents(): void {
+        const {
+            current,
+        } = this.element;
+
         window.addEventListener('resize', this.onWindowResize);
-        window.addEventListener('mousemove', this.onMouseMove);
+        current.addEventListener('mousemove', this.onMouseMove);
+        document.addEventListener('mousedown', this.onMouseDown);
+        current.addEventListener('mouseup', this.onMouseUp);
     }
     private detachEvents(): void {
+        const {
+            current,
+        } = this.element;
+
         window.removeEventListener('resize', this.onWindowResize);
-        window.removeEventListener('mousemove', this.onMouseMove);
+        current.removeEventListener('mousemove', this.onMouseMove);
+        document.removeEventListener('mousedown', this.onMouseDown);
+        current.removeEventListener('mouseup', this.onMouseUp);
     }
     @boundMethod
     private onWindowResize(): void {
@@ -124,6 +150,14 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     }
     @boundMethod
     private onMouseDown(e: MouseEvent): void {
+        const intersections = this.getMouseIntersectedObjects();
+
+        if (intersections.length) {
+            this.selectedObject = intersections[0].object;
+        } else {
+            this.selectedObject = null;
+        }
+        console.log(this.selectedObject);
         this.isMouseClicked = true;
     }
     @boundMethod
@@ -162,11 +196,11 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     private initializeScene(): void {
         this.scene.background = this.sceneTexture;
 
-        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        // this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
 
-        this.trackballControlls = new TrackballControls(this.camera, this.renderer.domElement);
-        this.trackballControlls.minDistance = 10;
-        this.trackballControlls.maxDistance = 100;
+        // this.trackballControlls = new TrackballControls(this.camera, this.renderer.domElement);
+        // this.trackballControlls.minDistance = 10;
+        // this.trackballControlls.maxDistance = 100;
     }
     private async loadBoard(): Promise<void> {
         try {
@@ -290,8 +324,8 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
     }
     @boundMethod
     private renderScene(): void {
-        this.orbitControls.update();
-        this.trackballControlls.update();
+        // this.orbitControls.update();
+        // this.trackballControlls.update();
         this.scene.children.forEach((obj: Object3D) => {
             obj.updateMatrixWorld();
         });

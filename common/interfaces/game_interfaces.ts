@@ -1,24 +1,29 @@
 import {PlayerColors, ChessPieces} from '../helpers/game_helper';
 import {GameTableFields, UserTableFields} from '../../server/enums/database';
 import {Socket} from 'socket.io';
+import {ChessFigure} from '../models/chess_figure';
 
 export interface Figure {
     type: ChessPieces;
     color: PlayerColors;
 }
-export interface GameTable {
-    [coord: string]: Figure;
+export interface GameTableType {
+    [coord: string]: ChessFigure;
 }
 export interface GameMove {
     from: string;
     to: string;
+}
+export interface Coordinates {
+    x: number;
+    y: number;
 }
 export interface GameData {
     [GameTableFields.ID]: number;
     [GameTableFields.PLAYER1_ID]: number;
     [GameTableFields.PLAYER2_ID]: number;
     [GameTableFields.ACTIVE_PLAYER]: number;
-    [GameTableFields.GAME_DATA]: GameTable;
+    [GameTableFields.GAME_DATA]: GameTableType;
     [GameTableFields.MOVES]: GameMove[];
     [GameTableFields.CREATED_AT]: string;
     [GameTableFields.UPDATED_AT]: string;

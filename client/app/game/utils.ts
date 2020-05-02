@@ -3,12 +3,9 @@ import * as THREE from 'three';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 import MaterialCreator = MTLLoader.MaterialCreator;
-import {Mesh, Object3D} from 'three';
+import {Object3D} from 'three';
+import {Coordinates} from '../../../common/interfaces/game_interfaces';
 
-export interface Coordinates {
-    x: number;
-    y: number;
-}
 export function getCoordinatesFromString(coord: string): Coordinates {
     const splittedString = coord.split('x');
 
