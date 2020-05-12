@@ -1,24 +1,24 @@
 import * as React from 'react';
 import {GameDataWithPlayerNames} from '../../../../common/interfaces/game_interfaces';
 import {AppFullPageContainer} from '../../../common/styled/AppFullSizeContainer';
-import {boundMethod} from 'autobind-decorator';
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
 import {GameTable} from '../../../../common/models/game_table';
 import {GameTableFields} from '../../../../server/enums/database';
+import {
+    APP_GAMEBOARD_COLUMNS,
+    APP_GAMEBOARD_ROWS,
+} from '../../constants/app_gameboard';
+import {AppGameBoardTableCell} from './AppGameBoardTableCell';
+import {AppPageStyledGameBoardTable} from '../../styled/game_board/AppPageStyledGameBoardTable';
 
 interface AppGameBoardProps {
     gameData: GameDataWithPlayerNames;
 }
-interface AppGameBoardState {
-    isLoadingAssets: boolean;
-    areAssetsLoaded: boolean;
-}
 
-export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGameBoardState> {
-    private element = React.createRef<HTMLDivElement>();
+export class AppGameBoard extends React.PureComponent<AppGameBoardProps> {
     private gameTable: GameTable;
-    private isMouseClicked: boolean;
+    private isLeftMouseDown: boolean;
 
     public state = {
         isLoadingAssets: false,
@@ -40,36 +40,67 @@ export class AppGameBoard extends React.PureComponent<AppGameBoardProps, AppGame
                             width={150}
                             height={150}
                         /> :
-                        <AppFullPageContainer ref={this.element}/>
+                        <AppFullPageContainer>
+                            <AppPageStyledGameBoardTable>
+                                <tbody>
+                                    {this.renderRows()}
+                                </tbody>
+                            </AppPageStyledGameBoardTable>
+                        </AppFullPageContainer>
                 }
             </React.Fragment>
         );
     }
-    public componentDidMount(): void {
-        this.gameTable = new GameTable(this.props.gameData[GameTableFields.GAME_DATA]);
+    public constructor(props: AppGameBoardProps) {
+        super(props);
 
+        this.gameTable = new GameTable(props.gameData[GameTableFields.GAME_DATA]);
+    }
+
+    public componentDidMount(): void {
         this.initialize();
     }
     public componentWillUnmount(): void {
         this.detachEvents();
     }
     private initialize(): void {
-        const {
-            current: container,
-        } = this.element;
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-
         this.attachEvents();
     }
     private attachEvents(): void {
-        const {
-            current,
-        } = this.element;
     }
     private detachEvents(): void {
-        const {
-            current,
-        } = this.element;
+    }
+    private renderRows(): React.ReactNode[] {
+        const rows = [];
+
+        for (let i = 0; i < APP_GAMEBOARD_ROWS; i++) {
+            const row = (
+                <tr key={i}>
+                    {this.renderCells(i)}
+                </tr>
+            );
+            rows.push(row);
+        }
+
+        return rows;
+    }
+    private renderCells(row: number): React.ReactNode[] {
+        const cells = [];
+
+        for (let i = 0; i < APP_GAMEBOARD_COLUMNS; i++) {
+            const figure = this.gameTable.getFigureFromCoords(i, row);
+
+            cells.push(
+                <AppGameBoardTableCell
+                    key={i}
+                    row={row}
+                    column={i}
+                    color={figure?.color}
+                    figure={figure?.type}
+                />
+            );
+        }
+
+        return cells;
     }
 }

@@ -10,6 +10,9 @@ export const theme: DefaultTheme = {
             darkblue: '#115293',
             navigation: '#4b0082',
             darkgray: '#696969',
+            cellLight: '#fae0c7',
+            cellDark: '#bf7e44',
+            tableBorder: '#8B4513',
         },
         font: {
             primary: '#101010',
