@@ -23,7 +23,12 @@ import {
     APP_USER_DISCONNECTED,
     APP_USER_JOINED,
 } from '../constants/app_actions';
-import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
+import {
+    GameDataWithPlayerNames,
+    GameMove,
+    LoggedUsersClient,
+    UserData,
+} from '../../../common/interfaces/game_interfaces';
 import {GameTableFields, UserTableFields} from '../../../server/enums/database';
 import {GamesFilter} from '../constants/app_games';
 
@@ -39,6 +44,7 @@ export interface AppStore {
     gamesFilter: GamesFilter;
     userSettings: UserData;
     activeUsers: LoggedUsersClient;
+    lastMove: GameMove;
 }
 
 const initialState: AppStore = {
@@ -53,6 +59,7 @@ const initialState: AppStore = {
     gamesFilter: GamesFilter.User,
     userSettings: null,
     activeUsers: {},
+    lastMove: null,
 };
 
 export function appReducer(state = initialState, action: AppActionTypes): AppStore {
@@ -172,8 +179,12 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
         case APP_GAME_DATA_CHANGED:
             const {
                 updatedGame,
+                move,
             } = action;
             gamesCopy = Array.from(state.games);
+            const returnedState = {
+                ...state,
+            };
 
             gamesCopy.forEach((game, index) => {
                 if (game[GameTableFields.ID] === updatedGame[GameTableFields.ID]) {
@@ -181,10 +192,16 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 }
             });
 
-            return {
-                ...state,
-                games: gamesCopy,
-            };
+            returnedState.games = gamesCopy;
+
+            if (state.activeGame?.[GameTableFields.ID] === updatedGame[GameTableFields.ID]) {
+                returnedState.activeGame = updatedGame;
+            }
+            if (move) {
+                returnedState.lastMove = move;
+            }
+
+            return returnedState;
         case APP_FETCH_GAME_DATA:
             return {
                 ...state,

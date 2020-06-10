@@ -27,7 +27,7 @@ function initialize(sequelize: Sequelize): void {
         },
         active_player: {
             type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
+            allowNull: true,
         },
         game_data: {
             type: DataTypes.JSON,

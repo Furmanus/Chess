@@ -192,4 +192,30 @@ describe('Game table model class', () => {
             expect(gameTable.getFiguresAbleToMove(PlayerColors.BLACK).length).toBe(4);
         });
     });
+    describe('Is move legal method', () => {
+        it('Should return false for invalid rook move', () => {
+            const rookPosition = {
+                x: 0,
+                y: 0,
+            };
+            const targetPosition = {
+                x: 1,
+                y: 1,
+            };
+
+            expect(gameTable.isMoveLegal(rookPosition, targetPosition)).toBe(false);
+        });
+        it('Should return true for valid rook move', () => {
+            const rookPosition = {
+                x: 0,
+                y: 0,
+            };
+            const targetPosition = {
+                x: 6,
+                y: 0,
+            };
+
+            expect(gameTable.isMoveLegal(rookPosition, targetPosition)).toBe(true);
+        });
+    });
 });

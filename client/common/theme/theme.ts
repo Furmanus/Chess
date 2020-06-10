@@ -43,6 +43,7 @@ export const theme: DefaultTheme = {
             gray: '#d0d0d0',
             black: '#000000',
             error: '#ff0000',
+            cellWithMove: '#0000ff',
         },
     },
     boxShadowBlur: {

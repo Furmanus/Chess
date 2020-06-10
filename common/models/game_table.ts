@@ -2,13 +2,21 @@ import {Coordinates, GameTableType} from '../interfaces/game_interfaces';
 import {figureTypeToMovement} from '../helpers/figures_helper';
 import {ChessPieces, PlayerColors} from '../helpers/game_helper';
 import {ChessFigure} from './chess_figure';
-import {isFigure} from '../interfaces/type_guards';
+import {isCoordinates, isFigure} from '../interfaces/type_guards';
 
 export class GameTable {
     public table: GameTableType;
 
     public constructor(data: GameTableType) {
-        this.table = data;
+        const mappedTable: GameTableType = {};
+
+        Object.keys(data).forEach((coord: string) => {
+            const figure = data[coord];
+
+            mappedTable[coord] = new ChessFigure(figure.color, figure.type, figure.position);
+        });
+
+        this.table = mappedTable;
     }
     public getFigureFromCoords(x: number, y: number): ChessFigure {
         return this.table[`${x}x${y}`];
@@ -107,12 +115,12 @@ export class GameTable {
         return result;
     }
     public moveFigure(figure: ChessFigure, newPosition: Coordinates): boolean;
-    public moveFigure(position: Coordinates, newPosition: Coordinates): boolean;
+    public moveFigure(figure: Coordinates, newPosition: Coordinates): boolean;
     public moveFigure(figure: ChessFigure | Coordinates, newPosition: Coordinates): boolean {
         let boardFigureCoords;
         let figureFromBoard;
 
-        if (!this.isPositionInBoard(newPosition)) {
+        if (!this.isPositionInBoard(newPosition) || !this.isMoveLegal(figure, newPosition)) {
             return false;
         }
 
@@ -139,6 +147,22 @@ export class GameTable {
         return Object.values(this.table).filter((figure: ChessFigure) => {
             return figure.color === playerColor && this.calculatePossibleMoves(figure, figure.position).length > 0;
         });
+    }
+    public isMoveLegal(from: ChessFigure, to: Coordinates): boolean;
+    public isMoveLegal(from: Coordinates, to: Coordinates): boolean;
+    public isMoveLegal(from: ChessFigure | Coordinates, to: Coordinates): boolean;
+    public isMoveLegal(from: ChessFigure | Coordinates, to: Coordinates): boolean {
+        if (isCoordinates(from)) {
+            from = this.getFigureFromCoords(from.x, from.y);
+
+            if (!from) {
+                return false;
+            }
+        }
+
+        const figureMoves = this.calculatePossibleMoves(from, from.position);
+
+        return figureMoves.some((coord: Coordinates) => coord.x === to.x && coord.y === to.y);
     }
     private isPositionInBoard(position: Coordinates): boolean {
         const {

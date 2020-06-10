@@ -5,6 +5,7 @@ import {encrypt} from './crypto';
 import {GameTableFields} from '../enums/database';
 import {createInitialBoard} from '../../common/helpers/game_helper';
 import {GameData, GameDataWithPlayerNames, UserData} from '../../common/interfaces/game_interfaces';
+import {MovementMadeGameUpdateData} from '../interfaces/database';
 
 class DatabaseHelperClass {
     public sequelize: Sequelize;
@@ -44,7 +45,7 @@ class DatabaseHelperClass {
     public async createGame(playerId: number): Promise<GameData> {
         const game = await this.GameModel.create({
             [GameTableFields.PLAYER1_ID]: playerId,
-            [GameTableFields.ACTIVE_PLAYER]: playerId,
+            [GameTableFields.ACTIVE_PLAYER]: null,
             [GameTableFields.GAME_STATE]: 'new',
             [GameTableFields.GAME_DATA]: createInitialBoard(),
             [GameTableFields.MOVES]: [],
@@ -77,6 +78,7 @@ class DatabaseHelperClass {
         if (gameData[GameTableFields.PLAYER2_ID] === null && gameData[GameTableFields.PLAYER1_ID] !== userId) {
             const update = await Game.update({
                 [GameTableFields.PLAYER2_ID]: userId,
+                [GameTableFields.ACTIVE_PLAYER]: gameData[GameTableFields.PLAYER1_ID],
             }, {
                 where: {
                     [GameTableFields.ID]: gameId,
@@ -88,6 +90,42 @@ class DatabaseHelperClass {
             }
             throw new Error('Failed to update game data');
         }
+        return null;
+    }
+    public async updateGameWithMove(gameId: number, data: MovementMadeGameUpdateData): Promise<GameData> {
+        const {
+            move,
+            gameTable,
+            newActiveUser,
+        } = data;
+        const examinedGame = await Game.findOne({
+            where: {
+                id: gameId,
+            },
+        });
+        const examinedGameData: GameData = examinedGame?.dataValues;
+        let update;
+
+        if (examinedGameData) {
+            examinedGameData[GameTableFields.MOVES].push(move);
+
+            update = await Game.update({
+                [GameTableFields.GAME_DATA]: gameTable,
+                [GameTableFields.ACTIVE_PLAYER]: newActiveUser,
+                [GameTableFields.MOVES]: examinedGameData[GameTableFields.MOVES],
+            }, {
+                where: {
+                    [GameTableFields.ID]: gameId,
+                },
+            });
+
+            if (update[0] > 0) {
+                return this.getGameByIdWithUsers(gameId);
+            }
+
+            throw new Error('Failed to update game data');
+        }
+
         return null;
     }
     public async getGameByIdWithUsers(gameId: number): Promise<GameDataWithPlayerNames> {

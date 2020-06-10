@@ -5,6 +5,8 @@ interface GameBoardCellProps {
     hasLightBackground: boolean;
     coordBefore: string;
     coordAfter: string;
+    highlighted: boolean;
+    selected: boolean;
 }
 
 function renderDataBefore(props: GameBoardCellProps): string {
@@ -40,12 +42,25 @@ function renderDataAfter(props: GameBoardCellProps): string {
     return '';
 }
 
+function getBoxShadowProperty(props: GameBoardCellProps): string {
+    if (props.highlighted) {
+        return '0 0 16px #0000ff inset';
+    } else if (props.selected) {
+        return '0 0 16px #ff0000 inset';
+    } else {
+        return 'none';
+    }
+}
+
 export const AppPageStyledGameBoardCell = styled.td<GameBoardCellProps>`
     position: relative;
     width: ${APP_GAMEBOARD_CELL_SIZE}px;
     height: ${APP_GAMEBOARD_CELL_SIZE}px;
     vertical-align: middle;
+    z-index: 10;
     text-align: center;
+    box-shadow: ${(props) => getBoxShadowProperty(props)};
+    cursor: ${(props) => props.highlighted ? 'pointer' : 'initial'};
     background: ${(props) => props.hasLightBackground ?
         props.theme.color.background.cellLight :
         props.theme.color.background.cellDark};

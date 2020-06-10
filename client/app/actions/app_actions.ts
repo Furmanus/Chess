@@ -203,9 +203,10 @@ export function joinUserToGame(userId: number, gameId: number): AppActionTypes {
         type: APP_JOIN_USER_TO_GAME,
     };
 }
-export function changeGameData(data: SocketGameDataChangedData, showNotification: boolean): AppActionTypes {
+export function changeGameData(data: SocketGameDataChangedData, showNotification?: boolean): AppActionTypes {
     const {
         gameData,
+        move,
         reason,
     } = data;
 
@@ -216,6 +217,7 @@ export function changeGameData(data: SocketGameDataChangedData, showNotification
     return {
         type: APP_GAME_DATA_CHANGED,
         updatedGame: gameData,
+        move,
     }
 }
 export function navigateToGame(gameId: number): AppActionTypes {

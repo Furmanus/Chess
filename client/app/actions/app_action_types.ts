@@ -26,7 +26,7 @@ import {
     APP_USER_JOINED,
 } from '../constants/app_actions';
 import {
-    GameDataWithPlayerNames, LoggedUsersClient,
+    GameDataWithPlayerNames, GameMove, LoggedUsersClient,
     UserData,
 } from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
@@ -97,7 +97,8 @@ interface JoinUserToGame {
 }
 interface GameDataChanged {
     type: typeof APP_GAME_DATA_CHANGED;
-    updatedGame: GameDataWithPlayerNames,
+    updatedGame: GameDataWithPlayerNames;
+    move: GameMove;
 }
 interface NavigateToGame {
     type: typeof APP_NAVIGATE_TO_GAME;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {GameDataWithPlayerNames} from '../../../../common/interfaces/game_interfaces';
+import {GameDataWithPlayerNames, GameMove, UserData} from '../../../../common/interfaces/game_interfaces';
 import {AppStore} from '../../reducers/app_reducer';
 import {fetchGameData, leaveGame} from '../../actions/app_actions';
 import {ThunkDispatch} from 'redux-thunk';
@@ -10,10 +10,15 @@ import {AppPageStyledGameBoardContainer} from '../../styled/game_board/AppPageSt
 import {theme} from '../../../common/theme/theme';
 import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
 import {AppGameBoard} from '../../components/game_board/AppGameBoard';
+import {PlayerColors} from '../../../../common/helpers/game_helper';
+import {getCurrentPlayerColor, getSettings} from '../../selectors/selectors';
 
 interface StateProps {
     isFetchingActiveGameData: boolean;
     activeGame: GameDataWithPlayerNames;
+    playerColor: PlayerColors;
+    userSettings: UserData;
+    lastMove: GameMove;
 }
 interface DispatchProps {
     fetchActiveGameData: (gameId: number) => void;
@@ -27,6 +32,9 @@ function mapStateToProps(state: AppStore): StateProps {
     return {
         isFetchingActiveGameData: state.isFetchingActiveGame,
         activeGame: state.activeGame,
+        lastMove: state.lastMove,
+        playerColor: getCurrentPlayerColor(state),
+        userSettings: getSettings(state),
     };
 }
 function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps {
@@ -50,6 +58,9 @@ class AppPageGameBoardClass extends React.Component<ComponentProps, {}> {
         const {
             isFetchingActiveGameData,
             activeGame,
+            playerColor,
+            userSettings,
+            lastMove,
         } = this.props;
 
         return (
@@ -67,6 +78,9 @@ class AppPageGameBoardClass extends React.Component<ComponentProps, {}> {
                     {Boolean(activeGame) && (
                         <AppGameBoard
                             gameData={activeGame}
+                            playerColor={playerColor}
+                            userData={userSettings}
+                            lastMove={lastMove}
                         />
                     )}
                 </AppPageStyledGameBoardContainer>

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { AppPageStyledGameBoardCell } from '../../styled/game_board/AppPageStyledGameBoardCell';
+import {SyntheticEvent} from 'react';
+import {AppPageStyledGameBoardCell} from '../../styled/game_board/AppPageStyledGameBoardCell';
 import {converNumberToAlphabetLetter} from '../../utils/utils';
 import {
     bishopBlackImage,
@@ -16,6 +17,8 @@ import {
     rookWhiteImage,
 } from '../../../../assets';
 import {ChessPieces, PlayerColors} from '../../../../common/helpers/game_helper';
+import {boundMethod} from 'autobind-decorator';
+import {Coordinates} from '../../../../common/interfaces/game_interfaces';
 
 function getFigureImage(figure: ChessPieces, color: PlayerColors): string {
     switch (color) {
@@ -60,6 +63,10 @@ interface AppGameBoardTableCellProps {
     column: number;
     figure?: ChessPieces;
     color?: PlayerColors;
+    highlighted?: boolean;
+    selected?: boolean;
+    onCellClick: (cell: Coordinates) => void;
+    onDragStart: (e: SyntheticEvent) => void;
 }
 
 export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCellProps> {
@@ -67,21 +74,32 @@ export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCell
         const {
             figure,
             color,
+            highlighted,
+            selected,
+            onDragStart,
         } = this.props;
         const figureImage = getFigureImage(figure, color);
         const coordsDataAttributes = this.getDataCoorAttributeValue();
-
+        if (figure === ChessPieces.KING && color === PlayerColors.BLACK) {
+            console.log(this.props);
+        }
         return (
             <AppPageStyledGameBoardCell
                 hasLightBackground={this.hasLightBackground()}
                 coordBefore={coordsDataAttributes.before}
                 coordAfter={coordsDataAttributes.after}
+                highlighted={highlighted}
+                selected={selected}
+                onClick={this.onCellClick}
             >
                 {
                     color && figure && (
-                        <div>
-                            <img src={figureImage} alt={`${color} ${figure}`}/>
-                        </div>
+                        <img
+                            src={figureImage}
+                            alt={`${color} ${figure}`}
+                            draggable={false}
+                            onMouseDown={onDragStart}
+                        />
                     )
                 }
             </AppPageStyledGameBoardCell>
@@ -120,5 +138,15 @@ export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCell
         }
 
         return result;
+    }
+    @boundMethod
+    private onCellClick(): void {
+        const {
+            onCellClick,
+            column,
+            row,
+        } = this.props;
+
+        onCellClick({x: column, y: row});
     }
 }
