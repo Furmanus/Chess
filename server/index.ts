@@ -20,6 +20,7 @@ const httpPort = process.env.NODE_ENV === 'development' ? 3000 : 80;
 const httpsPort = process.env.NODE_ENV === 'production' ? 3001 : 443;
 const MySqlStore =  expressMySqlSession(expressSession);
 const sessionStore = new MySqlStore({
+    host: process.env.DATABASE_HOSTNAME,
     user: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_BASENAME,

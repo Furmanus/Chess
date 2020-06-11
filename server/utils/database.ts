@@ -181,6 +181,7 @@ class DatabaseHelperClass {
     }
     private initalizeSequelize(): void {
         const {
+            DATABASE_HOSTNAME,
             DATABASE_BASENAME,
             DATABASE_USERNAME,
             DATABASE_PASSWORD,
@@ -188,6 +189,7 @@ class DatabaseHelperClass {
 
         this.sequelize = new Sequelize(DATABASE_BASENAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
             dialect: 'mysql',
+            host: DATABASE_HOSTNAME,
         });
     }
     private initializeModels(): void {
