@@ -30,11 +30,11 @@ function initialize(sequelize: Sequelize): void {
             allowNull: true,
         },
         game_data: {
-            type: DataTypes.JSON,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         moves: {
-            type: DataTypes.JSON,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         game_state: {
