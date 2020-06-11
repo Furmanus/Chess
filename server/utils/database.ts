@@ -5,7 +5,7 @@ import {encrypt} from './crypto';
 import {GameTableFields} from '../enums/database';
 import {createInitialBoard} from '../../common/helpers/game_helper';
 import {GameData, GameDataWithPlayerNames, UserData} from '../../common/interfaces/game_interfaces';
-import {MovementMadeGameUpdateData} from '../interfaces/database';
+import {DataBaseGameData, MovementMadeGameUpdateData} from '../interfaces/database';
 
 class DatabaseHelperClass {
     public sequelize: Sequelize;
@@ -47,11 +47,11 @@ class DatabaseHelperClass {
             [GameTableFields.PLAYER1_ID]: playerId,
             [GameTableFields.ACTIVE_PLAYER]: null,
             [GameTableFields.GAME_STATE]: 'new',
-            [GameTableFields.GAME_DATA]: createInitialBoard(),
-            [GameTableFields.MOVES]: [],
+            [GameTableFields.GAME_DATA]: JSON.stringify(createInitialBoard()),
+            [GameTableFields.MOVES]: JSON.stringify([]),
         });
 
-        return game.dataValues;
+        return prepareGameDataValues(game.dataValues);
     }
     public getUserByName(name: string): Promise<{dataValues: {id: string; login: string, password: string}}> {
         return this.UsersModel.findOne({
@@ -69,7 +69,7 @@ class DatabaseHelperClass {
         });
 
         return {
-            ...gameData.dataValues,
+            ...prepareGameDataValues(gameData.dataValues),
         };
     }
     public async joinUserToGame(userId: number, gameId: number): Promise<GameData> {
@@ -103,16 +103,16 @@ class DatabaseHelperClass {
                 id: gameId,
             },
         });
-        const examinedGameData: GameData = examinedGame?.dataValues;
+        const examinedGameData: GameData = prepareGameDataValues(examinedGame?.dataValues);
         let update;
 
         if (examinedGameData) {
             examinedGameData[GameTableFields.MOVES].push(move);
 
             update = await Game.update({
-                [GameTableFields.GAME_DATA]: gameTable,
+                [GameTableFields.GAME_DATA]: JSON.stringify(gameTable),
                 [GameTableFields.ACTIVE_PLAYER]: newActiveUser,
-                [GameTableFields.MOVES]: examinedGameData[GameTableFields.MOVES],
+                [GameTableFields.MOVES]: JSON.stringify(examinedGameData[GameTableFields.MOVES]),
             }, {
                 where: {
                     [GameTableFields.ID]: gameId,
@@ -137,7 +137,7 @@ class DatabaseHelperClass {
         });
 
         return {
-            ...result.dataValues,
+            ...prepareGameDataValues(result.dataValues),
             player1Name: result.player1?.dataValues?.login,
             player2Name: result.player2?.dataValues?.login,
         };
@@ -155,7 +155,7 @@ class DatabaseHelperClass {
 
         return userGames.map((game: any) => {
             return {
-                ...game.dataValues,
+                ...prepareGameDataValues(game.dataValues),
                 player1Name: game.player1?.dataValues?.login,
                 player2Name: game.player2?.dataValues?.login,
             };
@@ -174,7 +174,7 @@ class DatabaseHelperClass {
         });
 
         return userGames.map((game: any) => ({
-            ...game.dataValues,
+            ...prepareGameDataValues(game.dataValues),
             player1Name: game.player1?.dataValues?.login,
             player2Name: game.player2?.dataValues?.login,
         }));
@@ -217,6 +217,18 @@ class DatabaseHelperClass {
             foreignKey: 'player2_id',
         });
     }
+}
+
+function prepareGameDataValues(dataValues: DataBaseGameData): GameData {
+    if (dataValues) {
+        return {
+            ...dataValues,
+            [GameTableFields.GAME_DATA]: JSON.parse(dataValues[GameTableFields.GAME_DATA]),
+            [GameTableFields.MOVES]: JSON.parse(dataValues[GameTableFields.MOVES]),
+        };
+    }
+
+    return null;
 }
 
 export const databaseHelper = new DatabaseHelperClass();
