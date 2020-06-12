@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import {StyledProps} from '../../../common/interfaces/styled';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
 
 interface IFormInputContainerProps {
     showPlaceholder: boolean;
@@ -7,7 +7,9 @@ interface IFormInputContainerProps {
     hasError?: boolean;
 }
 
-function getLegendStyles(props: IFormInputContainerProps): string {
+type ThemedProps = ThemedStyledProps<IFormInputContainerProps, ITheme>;
+
+function getLegendStyles(props: ThemedProps): string {
     if (props.showPlaceholder) {
         return `
             padding-inline-start: 0;
@@ -17,7 +19,7 @@ function getLegendStyles(props: IFormInputContainerProps): string {
 
     return '';
 }
-function getLabelSize(props: StyledProps<IFormInputContainerProps>): string {
+function getLabelSize(props: ThemedProps): string {
     if (props.showPlaceholder) {
         return `${props.theme.font.size.medium}`;
     }
@@ -25,7 +27,7 @@ function getLabelSize(props: StyledProps<IFormInputContainerProps>): string {
     return `${props.theme.font.size.small}`;
 }
 
-function getBorderStyles(props: StyledProps<IFormInputContainerProps>): string {
+function getBorderStyles(props: ThemedProps): string {
     if (props.isFocused) {
         return `
             border-width: 2px;
@@ -45,7 +47,7 @@ function getBorderStyles(props: StyledProps<IFormInputContainerProps>): string {
         border-color: ${props.theme.border.color.gray};
     `;
 }
-function getFontColor(props: StyledProps<IFormInputContainerProps>): string {
+function getFontColor(props: ThemedProps): string {
     if (props.showPlaceholder) {
         return props.theme.color.font.secondary;
     }
@@ -71,7 +73,7 @@ export const LoginPageStyledFormInputContainer = styled.div<IFormInputContainerP
         height: 44px;
         padding: 0 8px;
         border: none;
-        font-size: ${(props) => props.theme.font.size.medium};
+        font-size: ${(props: ThemedProps) => props.theme.font.size.medium};
         
         &:focus {
             outline: none;
@@ -81,9 +83,9 @@ export const LoginPageStyledFormInputContainer = styled.div<IFormInputContainerP
         position: absolute;
         left: 10px;
         top: 20px;
-        color: ${(props) => getFontColor(props)};
-        font-size: ${(props) => getLabelSize(props)};
-        transform: ${(props) => props.showPlaceholder ? '' : 'translate(0, -20px)'};
+        color: ${(props: ThemedProps) => getFontColor(props)};
+        font-size: ${(props: ThemedProps) => getLabelSize(props)};
+        transform: ${(props: ThemedProps) => props.showPlaceholder ? '' : 'translate(0, -20px)'};
         pointer-events: none;
         z-index: 2;
         transition: all 0.2s ease-in-out;
@@ -99,17 +101,17 @@ export const LoginPageStyledFormInputContainer = styled.div<IFormInputContainerP
         padding-block-end: 0;
         margin-inline-start: 0;
         margin-inline-end: 0;
-        color: ${(props) => props.theme.color.font.secondary};
+        color: ${(props: ThemedProps) => props.theme.color.font.secondary};
         padding-inline-start: 6px;
         padding-inline-end: 10px;
         transition: all 0.2s ease-in-out;
-        ${(props) => getBorderStyles(props)};
+        ${(props: ThemedProps) => getBorderStyles(props)};
     
         legend {
             height: 18px;
-            font-size: ${(props) => props.theme.font.size.small};
+            font-size: ${(props: ThemedProps) => props.theme.font.size.small};
             visibility: hidden;
-            ${(props) => getLegendStyles(props)};
+            ${(props: ThemedProps) => getLegendStyles(props)};
         }
     }
 `;

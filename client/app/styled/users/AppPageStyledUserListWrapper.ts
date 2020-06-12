@@ -1,10 +1,13 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const AppPageStyledUserListWrapper = styled.div`
     float: right;
     width: 25%;
     height: 100%;
     border-radius: 12px;
-    box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.thin};
-    background: ${(props) => props.theme.color.background.secondary};
+    box-shadow: 0 0 ${(props: ThemedProps) => props.theme.boxShadowBlur.thin};
+    background: ${(props: ThemedProps) => props.theme.color.background.secondary};
 `;

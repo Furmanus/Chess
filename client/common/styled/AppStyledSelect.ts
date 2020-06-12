@@ -1,9 +1,11 @@
-import styled from 'styled-components';
-import {StyledProps} from '../interfaces/styled';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../theme/theme';
 
 interface AppStyledSelectProps {
     disabled: boolean;
 }
+
+type ThemedProps = ThemedStyledProps<AppStyledSelectProps, ITheme>;
 
 export const AppStyledSelect = styled.select<AppStyledSelectProps>`
     display: block;
@@ -14,14 +16,14 @@ export const AppStyledSelect = styled.select<AppStyledSelectProps>`
     margin: 0;
     box-shadow: 0 0 1px;
     transition: 0.4s;
-    opacity: ${(props: StyledProps<AppStyledSelectProps>) => props.disabled ? '0.3' : '1'};
+    opacity: ${(props: ThemedProps) => props.disabled ? '0.3' : '1'};
     
     &:focus {
-        border-color: ${(props: StyledProps<AppStyledSelectProps>) => props.theme.border.color.blue};
+        border-color: ${(props: ThemedProps) => props.theme.border.color.blue};
         border-width: 2px;
-        box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.veryThin} ${(props) => props.theme.border.color.blue};
+        box-shadow: 0 0 ${(props: ThemedProps) => props.theme.boxShadowBlur.veryThin} ${(props) => props.theme.border.color.blue};
     }
     &:hover {
-        cursor: ${(props: StyledProps<AppStyledSelectProps>) => props.disabled ? 'not-allowed' : 'pointer'};
+        cursor: ${(props: ThemedProps) => props.disabled ? 'not-allowed' : 'pointer'};
     }
 `;

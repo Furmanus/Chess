@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const AppPageStyledGameBrickWrapper = styled.div`
     position: relative;
@@ -11,12 +14,12 @@ export const AppPageStyledGameBrickWrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.thin};
-    font-size: ${(props) => props.theme.font.size.small};
+    box-shadow: 0 0 ${(props: ThemedProps) => props.theme.boxShadowBlur.thin};
+    font-size: ${(props: ThemedProps) => props.theme.font.size.small};
     transition: 0.4s ease-in-out;
     
     &:hover {
-        box-shadow: 0 0 ${(props) => props.theme.boxShadowBlur.veryThick};
+        box-shadow: 0 0 ${(props: ThemedProps) => props.theme.boxShadowBlur.veryThick};
     }
     
     .players {

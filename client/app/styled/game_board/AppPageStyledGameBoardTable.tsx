@@ -1,6 +1,9 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const AppPageStyledGameBoardTable = styled.table`
     border-collapse: collapse;
-    border: 36px solid ${(props) => props.theme.color.background.tableBorder};
+    border: 36px solid ${(props: ThemedProps) => props.theme.color.background.tableBorder};
 `;

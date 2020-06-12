@@ -1,6 +1,4 @@
-import {DefaultTheme} from 'styled-components';
-
-export const theme: DefaultTheme = {
+export const theme = {
     color: {
         background: {
             primary: '#f2f4f7',
@@ -54,4 +52,4 @@ export const theme: DefaultTheme = {
         veryThin: '3px',
     },
 };
-
+export type ITheme = typeof theme;

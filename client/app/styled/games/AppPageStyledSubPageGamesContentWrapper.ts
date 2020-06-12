@@ -1,9 +1,12 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
 
 interface ComponentProps {
     opaque?: boolean;
 }
-// TODO poprawic typowanie propsow
+
+type ThemedProps = ThemedStyledProps<ComponentProps, ITheme>;
+
 export const AppPageStyledSubPageGamesContentWrapper = styled.div<ComponentProps>`
     position: relative;
     height: 85%;
@@ -11,5 +14,5 @@ export const AppPageStyledSubPageGamesContentWrapper = styled.div<ComponentProps
     padding: 10px;
     overflow-y: auto;
     margin: auto;
-    opacity: ${(props: any) => props.opaque ? 0.5 : 1};
+    opacity: ${(props: ThemedProps) => props.opaque ? 0.5 : 1};
 `;

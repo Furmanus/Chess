@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import {StyledProps} from '../interfaces/styled';
-import {Link} from 'react-router-dom';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {Link, LinkProps} from 'react-router-dom';
+import {ITheme} from '../theme/theme';
 
 interface AppButtonProps {
     readonly width?: number;
@@ -11,7 +11,9 @@ interface AppButtonProps {
     readonly disabled?: boolean;
 }
 
-function getFontSize(props: StyledProps<AppButtonProps>): number {
+type ThemedProps = ThemedStyledProps<AppButtonProps, ITheme>;
+
+function getFontSize(props: ThemedProps): number {
     switch (props.fontSize) {
         case 'small':
             return 12;
@@ -26,7 +28,7 @@ function getFontSize(props: StyledProps<AppButtonProps>): number {
     }
 }
 
-function getColor(props: StyledProps<AppButtonProps>): string {
+function getColor(props: ThemedProps): string {
     switch (props.variation) {
         case 'ghost':
             if (props.disabled) {
@@ -38,7 +40,7 @@ function getColor(props: StyledProps<AppButtonProps>): string {
             return props.theme.color.font.white;
     }
 }
-function getHoverColor(props: StyledProps<AppButtonProps>): string {
+function getHoverColor(props: ThemedProps): string {
     switch (props.variation) {
         case 'ghost':
             if (props.disabled) {
@@ -50,7 +52,7 @@ function getHoverColor(props: StyledProps<AppButtonProps>): string {
             return props.theme.color.font.white;
     }
 }
-function getBackgroundColor(props: StyledProps<AppButtonProps>): string {
+function getBackgroundColor(props: ThemedProps): string {
     if (props.variation === 'ghost') {
         return 'transparent';
     } else {
@@ -61,7 +63,7 @@ function getBackgroundColor(props: StyledProps<AppButtonProps>): string {
         }
     }
 }
-function getHoverBackgroundColor(props: StyledProps<AppButtonProps>): string {
+function getHoverBackgroundColor(props: ThemedProps): string {
     if (props.variation === 'ghost') {
         if (props.disabled) {
             return 'transparent';
@@ -74,14 +76,14 @@ function getHoverBackgroundColor(props: StyledProps<AppButtonProps>): string {
         return props.theme.color.background.darkblue;
     }
 }
-function getCursor(props: StyledProps<AppButtonProps>): string {
+function getCursor(props: ThemedProps): string {
     if (props.disabled) {
         return 'not-allowed';
     }
     return 'pointer';
 }
 
-function getStylesCssText(props: StyledProps<AppButtonProps>, isHistoryLink: boolean = false): string {
+function getStylesCssText(props: ThemedProps, isHistoryLink: boolean = false): string {
     return `
         width: ${props.width ? `${props.width}px` : '100%'};
         height: ${props.height ? `${props.height}px` : '56px'};
@@ -107,8 +109,8 @@ function getStylesCssText(props: StyledProps<AppButtonProps>, isHistoryLink: boo
 }
 
 export const AppStyledButton = styled.button<AppButtonProps>`
-    ${(props) => getStylesCssText(props)};
+    ${(props: ThemedProps) => getStylesCssText(props)};
 `;
-export const AppStyledHistoryLink = styled(Link)<any>`
-    ${(props) => getStylesCssText(props, true)};
+export const AppStyledHistoryLink = styled(Link)<LinkProps>`
+    ${(props: ThemedProps) => getStylesCssText(props, true)};
 `;

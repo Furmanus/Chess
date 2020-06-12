@@ -1,4 +1,7 @@
-import styled, {keyframes} from 'styled-components';
+import styled, {keyframes, ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 const animation = keyframes`
     from {
@@ -15,15 +18,15 @@ export const AppPageStyledGameBrickTurnReadyElement = styled.div`
     height: 20px;
     right: 0;
     top: -10px;
-    background: ${(props) => props.theme.color.background.blue};
+    background: ${(props: ThemedProps) => props.theme.color.background.blue};
     padding: 3px 6px;
     text-align: center;
     text-transform: uppercase;
     border-radius: 8px;
     letter-spacing: 1.10;
-    color: ${(props) => props.theme.color.font.white};
-    font-weight: ${(props) => props.theme.font.weight.bold};
-    font-size: ${(props) => props.theme.font.size.subsmall};
+    color: ${(props: ThemedProps) => props.theme.color.font.white};
+    font-weight: ${(props: ThemedProps) => props.theme.font.weight.bold};
+    font-size: ${(props: ThemedProps) => props.theme.font.size.subsmall};
     
     &::after {
         content: '';
@@ -33,7 +36,7 @@ export const AppPageStyledGameBrickTurnReadyElement = styled.div`
         bottom: 0;
         right: 0;
         border-radius: 8px;
-        background: ${(props) => props.theme.color.background.blue};
+        background: ${(props: ThemedProps) => props.theme.color.background.blue};
         z-index: -1;
         animation: ${animation} 1s ease infinite;
     }

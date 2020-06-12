@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
 import {APP_GAMEBOARD_CELL_SIZE} from '../../constants/app_gameboard';
+import {ITheme} from '../../../common/theme/theme';
 
 interface GameBoardCellProps {
     hasLightBackground: boolean;
@@ -9,7 +10,9 @@ interface GameBoardCellProps {
     selected: boolean;
 }
 
-function renderDataBefore(props: GameBoardCellProps): string {
+type ThemedProps = ThemedStyledProps<GameBoardCellProps, ITheme>;
+
+function renderDataBefore(props: ThemedProps): string {
     if (props.coordBefore) {
         return `
             &::before {
@@ -25,7 +28,7 @@ function renderDataBefore(props: GameBoardCellProps): string {
 
     return '';
 }
-function renderDataAfter(props: GameBoardCellProps): string {
+function renderDataAfter(props: ThemedProps): string {
     if (props.coordAfter) {
         return `
             &::after {
@@ -42,7 +45,7 @@ function renderDataAfter(props: GameBoardCellProps): string {
     return '';
 }
 
-function getBoxShadowProperty(props: GameBoardCellProps): string {
+function getBoxShadowProperty(props: ThemedProps): string {
     if (props.highlighted) {
         return '0 0 16px #0000ff inset';
     } else if (props.selected) {
@@ -59,12 +62,12 @@ export const AppPageStyledGameBoardCell = styled.td<GameBoardCellProps>`
     vertical-align: middle;
     z-index: 10;
     text-align: center;
-    box-shadow: ${(props) => getBoxShadowProperty(props)};
-    cursor: ${(props) => props.highlighted ? 'pointer' : 'initial'};
-    background: ${(props) => props.hasLightBackground ?
+    box-shadow: ${(props: ThemedProps) => getBoxShadowProperty(props)};
+    cursor: ${(props: ThemedProps) => props.highlighted ? 'pointer' : 'initial'};
+    background: ${(props: ThemedProps) => props.hasLightBackground ?
         props.theme.color.background.cellLight :
         props.theme.color.background.cellDark};
         
-    ${(props) => renderDataBefore(props)}
-    ${(props) => renderDataAfter(props)}
+    ${(props: ThemedProps) => renderDataBefore(props)}
+    ${(props: ThemedProps) => renderDataAfter(props)}
 `;

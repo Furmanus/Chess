@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const LoginPageStyledLinksSection = styled.div`
     width: 100%;
@@ -9,7 +12,7 @@ export const LoginPageStyledLinksSection = styled.div`
     
     a.register {
         text-decoration: none;
-        color: ${(props) => props.theme.color.font.blue};
-        font-size: ${(props) => props.theme.font.size.submedium};
+        color: ${(props: ThemedProps) => props.theme.color.font.blue};
+        font-size: ${(props: ThemedProps) => props.theme.font.size.submedium};
     }
 `;

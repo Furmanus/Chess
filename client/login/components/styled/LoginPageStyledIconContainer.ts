@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const LoginPageStyledIconContainer = styled.div`
     display: flex;
@@ -8,9 +11,9 @@ export const LoginPageStyledIconContainer = styled.div`
     width: 3em;
     height: 3em;
     border-radius: 50%;
-    background: ${(props) => props.theme.color.background.red};
+    background: ${(props: ThemedProps) => props.theme.color.background.red};
     
     svg {
-        fill: ${(props) => props.theme.color.svg.white};
+        fill: ${(props: ThemedProps) => props.theme.color.svg.white};
     }
 `;

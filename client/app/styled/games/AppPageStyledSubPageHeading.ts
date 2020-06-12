@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const AppPageStyledSubPageHeading = styled.div`
     display: flex;
@@ -7,6 +10,6 @@ export const AppPageStyledSubPageHeading = styled.div`
     align-items: flex-end;
     width: 100%;
     height: 15%;
-    border-bottom: 1px solid ${(props) => props.theme.border.color.black};
+    border-bottom: 1px solid ${(props: ThemedProps) => props.theme.border.color.black};
     padding: 5px 25px;
 `;

@@ -1,7 +1,10 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const LoginPageStyledFormErrorContainer = styled.div`
-    color: ${(props) => props.theme.color.font.error};
-    font-size: ${(props) => props.theme.font.size.small};
+    color: ${(props: ThemedProps) => props.theme.color.font.error};
+    font-size: ${(props: ThemedProps) => props.theme.font.size.small};
     margin-top: 12px;
 `;

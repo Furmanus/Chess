@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {ThemedStyledProps} from 'styled-components';
+import {ITheme} from '../../common/theme/theme';
+
+type ThemedProps = ThemedStyledProps<{}, ITheme>;
 
 export const AppPageStyledPageNavigationList = styled.nav`
     height: 85%;
@@ -25,8 +28,8 @@ export const AppPageStyledPageNavigationList = styled.nav`
                 justify-content: flex-start;
                 align-items: center;
                 text-decoration: none;
-                color: ${(props) => props.theme.color.font.white};
-                font-size: ${(props) => props.theme.font.size.medium};
+                color: ${(props: ThemedProps) => props.theme.color.font.white};
+                font-size: ${(props: ThemedProps) => props.theme.font.size.medium};
                 letter-spacing: 0.05rem;
                 text-transform: uppercase;
                 padding: 10px 0 10px 15px;
@@ -36,8 +39,8 @@ export const AppPageStyledPageNavigationList = styled.nav`
                 }
                 
                 &:hover {
-                    color: ${(props) => props.theme.color.font.primary};
-                    background: ${(props) => props.theme.color.background.primary};
+                    color: ${(props: ThemedProps) => props.theme.color.font.primary};
+                    background: ${(props: ThemedProps) => props.theme.color.background.primary};
                     
                     &::before {
                         position: absolute;
@@ -46,8 +49,8 @@ export const AppPageStyledPageNavigationList = styled.nav`
                         content: '';
                         width: 10px;
                         height: 10px;
-                        border-top: 3px solid ${(props) => props.theme.color.background.primary};
-                        border-left: 3px solid ${(props) => props.theme.color.background.primary};
+                        border-top: 3px solid ${(props: ThemedProps) => props.theme.color.background.primary};
+                        border-left: 3px solid ${(props: ThemedProps) => props.theme.color.background.primary};
                         border-top-left-radius: 50%;
                         border-bottom: 1px solid transparent;
                         border-right: 1px solid transparent;
@@ -60,8 +63,8 @@ export const AppPageStyledPageNavigationList = styled.nav`
                         content: '';
                         width: 10px;
                         height: 10px;
-                        border-top: 3px solid ${(props) => props.theme.color.background.primary};
-                        border-left: 3px solid ${(props) => props.theme.color.background.primary};
+                        border-top: 3px solid ${(props: ThemedProps) => props.theme.color.background.primary};
+                        border-left: 3px solid ${(props: ThemedProps) => props.theme.color.background.primary};
                         border-top-left-radius: 50%;
                         border-bottom: 1px solid transparent;
                         border-right: 1px solid transparent;
