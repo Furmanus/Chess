@@ -1,5 +1,6 @@
-import {ThunkAction} from 'redux-thunk';
+import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AppStore} from '../reducers/app_reducer';
-import {Action} from 'redux';
+import {AppActionTypes} from '../actions/app_action_types';
 
-export type AppThunkAction<R = void> = ThunkAction<R, AppStore, unknown, Action<string>>;
+export type AppThunkAction<R = void> = ThunkAction<R, AppStore, undefined, AppActionTypes>;
+export type AppThunkDispatch = ThunkDispatch<AppStore, void, AppActionTypes>;

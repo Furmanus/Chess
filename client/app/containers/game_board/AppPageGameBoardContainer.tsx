@@ -2,7 +2,6 @@ import * as React from 'react';
 import {GameDataWithPlayerNames, GameMove, UserData} from '../../../../common/interfaces/game_interfaces';
 import {AppStore} from '../../reducers/app_reducer';
 import {fetchGameData, leaveGame} from '../../actions/app_actions';
-import {ThunkDispatch} from 'redux-thunk';
 import {connect, ConnectedProps} from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import {AppPageStyledSubPageHeading} from '../../styled/games/AppPageStyledSubPageHeading';
@@ -12,6 +11,7 @@ import {AppStyledLoader} from '../../../common/styled/AppStyledLoader';
 import {AppGameBoard} from '../../components/game_board/AppGameBoard';
 import {PlayerColors} from '../../../../common/helpers/game_helper';
 import {getCurrentPlayerColor, getSettings} from '../../selectors/selectors';
+import {AppThunkDispatch} from '../../interfaces/thunk';
 
 interface StateProps {
     isFetchingActiveGameData: boolean;
@@ -37,7 +37,7 @@ function mapStateToProps(state: AppStore): StateProps {
         userSettings: getSettings(state),
     };
 }
-function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps {
+function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
     return {
         fetchActiveGameData: (gameId: number) => {
             dispatch(fetchGameData(gameId));

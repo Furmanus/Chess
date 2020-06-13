@@ -8,7 +8,6 @@ import {LoginPageStyledSubmitButton} from '../components/styled/LoginPageStyledS
 import {LoginPageStyledLinksSection} from '../components/styled/LoginPageStyledLinksSection';
 import {IStore} from '../reducers/reducer';
 import {LoginPageStates} from '../constants/login_page_states';
-import {Dispatch} from 'redux';
 import {changeFormError, changeLoginPageState} from '../actions/actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {LoginPageStyledRepeatPasswordContainer} from '../components/styled/LoginPageStyledRepeatPasswordContainer';
@@ -16,6 +15,8 @@ import {sendLoginData, sendRegisterData} from '../../api/login';
 import {LoginPageStyledFormErrorContainer} from './styled/LoginPageStyledFormErrorContainer';
 import {getErrorMessage} from '../utils/api_errors';
 import {ErrorCodesToMessageKey} from '../../../common/error_codes';
+import {ThunkDispatch} from 'redux-thunk';
+import {LoginPageActionTypes} from '../actions/actionTypes';
 
 interface ILoginFormState {
     readonly emailInputValue: string;
@@ -45,7 +46,7 @@ function mapStateToProps(state: IStore): ILoginFormStateProps {
         formError: state.formError,
     };
 }
-function mapDispatchToProps(dispatch: Dispatch): ILoginFormDispatchProps {
+function mapDispatchToProps(dispatch: ThunkDispatch<IStore, void, LoginPageActionTypes>): ILoginFormDispatchProps {
     return {
         changeLoginPageMode: (mode: LoginPageStates) => {
             dispatch(changeLoginPageState(mode));

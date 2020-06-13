@@ -2,7 +2,6 @@ import * as React from 'react';
 import {AppPageStyledSubPageGamesContentWrapper} from '../../styled/games/AppPageStyledSubPageGamesContentWrapper';
 // @ts-ignore
 import * as Fade from 'react-reveal/Fade';
-import {ThunkDispatch} from 'redux-thunk';
 import {changeFilter, createGame, fetchGames, joinUserToGame, navigateToGame,} from '../../actions/app_actions';
 import {connect, ConnectedProps} from 'react-redux';
 import {boundMethod} from 'autobind-decorator';
@@ -17,6 +16,7 @@ import {GameTableFields, UserTableFields} from '../../../../server/enums/databas
 import {GamesFilter} from '../../constants/app_games';
 import {getChoosenGames} from '../../selectors/selectors';
 import {AppPageGameNav} from '../../components/games/AppPageGameNav';
+import {AppThunkDispatch} from '../../interfaces/thunk';
 
 interface DispatchProps {
     createGame: () => void;
@@ -42,7 +42,7 @@ function mapStateToProps(state: AppStore): StateProps {
         gamesFilter: state.gamesFilter,
     };
 }
-function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): DispatchProps {
+function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
     return {
         createGame: () => {
             dispatch(createGame());

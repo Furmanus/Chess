@@ -9,9 +9,9 @@ import {
     fetchActiveUsers as fetchActiveUsersAction,
     fetchUserSettings,
 } from '../actions/app_actions';
-import {ThunkDispatch} from 'redux-thunk';
 import {AppStyledLoader} from '../../common/styled/AppStyledLoader';
 import {theme} from '../../common/theme/theme';
+import {AppThunkDispatch} from '../interfaces/thunk';
 
 interface AppPageStoreProps {
     userSettings: UserData;
@@ -30,7 +30,7 @@ function mapStateToProps(state: AppStore): AppPageStoreProps {
         isFetchingUsers: state.isFetchingUsers,
     };
 }
-function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): AppPageDispatchProps {
+function mapDispatchToProps(dispatch: AppThunkDispatch): AppPageDispatchProps {
     return {
         fetchSettings: () => {
             dispatch(fetchUserSettings());
@@ -41,7 +41,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): AppPageDispat
     };
 }
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect<AppPageStoreProps, AppPageDispatchProps>(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ComponentProps = PropsFromRedux;
 
