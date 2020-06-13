@@ -49,7 +49,6 @@ bower_components
 # misc
 .sass-cache
 connect.lock
-typings
 
 # Logs
 logs
