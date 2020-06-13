@@ -111,6 +111,6 @@ function getStylesCssText(props: ThemedProps, isHistoryLink: boolean = false): s
 export const AppStyledButton = styled.button<AppButtonProps>`
     ${(props: ThemedProps) => getStylesCssText(props)};
 `;
-export const AppStyledHistoryLink = styled(Link)<LinkProps>`
+export const AppStyledHistoryLink = styled(Link)<AppButtonProps & LinkProps>`
     ${(props: ThemedProps) => getStylesCssText(props, true)};
 `;
