@@ -38,11 +38,18 @@ import {
     fetchUserAndVacantGames as fetchGamesApi,
     fetchUserSettings as fetchUserSettingsApi,
 } from '../../api/app';
-import {GameDataWithPlayerNames, LoggedUsersClient, UserData,} from '../../../common/interfaces/game_interfaces';
+import {
+    GameDataWithPlayerNames,
+    LoggedUsersClient,
+    UserData,
+} from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
 import {socketManager} from '../utils/socket';
 import {SocketGameDataChangedData} from '../../../common/interfaces/socket_event_data_types';
-import {showGameCreatedNotification, showPlayerJoinedGameNotification,} from '../utils/notifications';
+import {
+    showGameCreatedNotification,
+    showPlayerJoinedGameNotification,
+} from '../utils/notifications';
 
 export function logout(): ThunkAction<void, AppStore, null, Action<string>> {
     return async (dispatch: Dispatch) => {
@@ -207,7 +214,6 @@ export function changeGameData(data: SocketGameDataChangedData, showNotification
     const {
         gameData,
         move,
-        reason,
     } = data;
 
     if (showNotification) {

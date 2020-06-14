@@ -49,7 +49,7 @@ export interface LoggedUsersClient {
 export interface LoggedUsers {
     [id: number]: LoggedUserData;
 }
-export interface LoggedUserData{
+export interface LoggedUserData {
     name: string;
     socket: Socket;
 }

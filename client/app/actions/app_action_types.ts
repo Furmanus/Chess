@@ -17,7 +17,7 @@ import {
     APP_FILTER_CHANGE,
     APP_GAME_DATA_CHANGED,
     APP_JOIN_USER_TO_GAME,
-     APP_LEAVE_GAME,
+    APP_LEAVE_GAME,
     APP_LOGOUT,
     APP_LOGOUT_FAILURE,
     APP_LOGOUT_SUCCESS,
@@ -26,7 +26,9 @@ import {
     APP_USER_JOINED,
 } from '../constants/app_actions';
 import {
-    GameDataWithPlayerNames, GameMove, LoggedUsersClient,
+    GameDataWithPlayerNames,
+    GameMove,
+    LoggedUsersClient,
     UserData,
 } from '../../../common/interfaces/game_interfaces';
 import {GamesFilter} from '../constants/app_games';
