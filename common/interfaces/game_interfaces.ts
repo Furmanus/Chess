@@ -1,12 +1,7 @@
-import {PlayerColors, ChessPieces} from '../helpers/game_helper';
 import {GameTableFields, UserTableFields} from '../../server/enums/database';
 import {Socket} from 'socket.io';
 import {ChessFigure} from '../models/chess_figure';
 
-export interface Figure {
-    type: ChessPieces;
-    color: PlayerColors;
-}
 export interface GameTableType {
     [coord: string]: ChessFigure;
 }

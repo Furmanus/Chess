@@ -118,7 +118,6 @@ export class GameTable {
     public moveFigure(figure: Coordinates, newPosition: Coordinates): boolean;
     public moveFigure(figure: ChessFigure | Coordinates, newPosition: Coordinates): boolean {
         let boardFigureCoords;
-        let figureFromBoard;
 
         if (!this.isPositionInBoard(newPosition) || !this.isMoveLegal(figure, newPosition)) {
             return false;
@@ -131,7 +130,7 @@ export class GameTable {
             boardFigureCoords = `${figure.x}x${figure.y}`;
         }
 
-        figureFromBoard = this.table[boardFigureCoords];
+        const figureFromBoard = this.table[boardFigureCoords];
 
         if (!figureFromBoard) {
             throw new Error('Figure not present on board at its coordinates');

@@ -31,16 +31,16 @@ class SocketHelper {
     public getUserById(id: number): LoggedUserData {
         return loggedUsers[id];
     }
-    public emitEventByUser(userId: number, event: string, data?: object): void {
+    public emitEventByUser(userId: number, event: string, data?: Record<string, unknown>): void {
         const userSocket = this.getUserById(userId)?.socket;
 
         if (userSocket) {
             userSocket.emit(event, data);
         }
     }
-    public emitOnlyToSpecificUsers(targetUsersId: number, event: string, data?: object): void;
-    public emitOnlyToSpecificUsers(targetUsersId: number[], event: string, data?: object): void;
-    public emitOnlyToSpecificUsers(targetUsersId: number | number[], event: string, data?: object): void {
+    public emitOnlyToSpecificUsers(targetUsersId: number, event: string, data?: Record<string, unknown>): void;
+    public emitOnlyToSpecificUsers(targetUsersId: number[], event: string, data?: Record<string, unknown>): void;
+    public emitOnlyToSpecificUsers(targetUsersId: number | number[], event: string, data?: Record<string, unknown>): void {
         if (!Array.isArray(targetUsersId)) {
             targetUsersId = [targetUsersId];
         }
@@ -63,7 +63,7 @@ class SocketHelper {
             userName,
         } = socket.handshake.session;
 
-        socket.on('disconnect', (reason) => {
+        socket.on('disconnect', () => {
             delete loggedUsers[user];
 
             socket.broadcast.emit(SocketEvent.UserDisconnected, {

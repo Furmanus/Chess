@@ -3,7 +3,7 @@ import {AppPageStyledEmptyStateContainer} from '../../styled/games/AppPageStyled
 import {GiEmptyChessboard} from 'react-icons/gi';
 import {appPageTranslations, Languages} from '../../constants/app_translations';
 
-export class AppPageGamesEmptyState extends React.Component<{}, {}> {
+export class AppPageGamesEmptyState extends React.Component {
     public render(): React.ReactNode {
         return (
             <AppPageStyledEmptyStateContainer>

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {AppPageStyledSubPageGamesContentWrapper} from '../../styled/games/AppPageStyledSubPageGamesContentWrapper';
-// @ts-ignore
 import * as Fade from 'react-reveal/Fade';
 import {changeFilter, createGame, fetchGames, joinUserToGame, navigateToGame,} from '../../actions/app_actions';
 import {connect, ConnectedProps} from 'react-redux';
@@ -67,7 +66,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ComponentProps = PropsFromRedux;
 
-class AppPageGamesContainerClass extends React.Component<ComponentProps, {}> {
+class AppPageGamesContainerClass extends React.Component<ComponentProps> {
     public render(): React.ReactNode {
         const {
             isFetchingGames,

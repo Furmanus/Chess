@@ -8,13 +8,13 @@ import {AppRoutes} from '../../common/constants/app_routes';
 import {connect, ConnectedProps} from 'react-redux';
 import {logout} from '../actions/app_actions';
 import {boundMethod} from 'autobind-decorator';
-import {ThunkDispatch} from 'redux-thunk';
+import {AppThunkDispatch} from '../interfaces/thunk';
 
 interface AppPageNavigationListDispatchProps {
     logout: () => void;
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, any>): AppPageNavigationListDispatchProps {
+function mapDispatchToProps(dispatch: AppThunkDispatch): AppPageNavigationListDispatchProps {
     return {
         logout: () => {
             dispatch(logout());
@@ -26,7 +26,7 @@ const connector = connect(undefined, mapDispatchToProps);
 
 type ComponentProps = ConnectedProps<typeof connector>;
 
-class AppPageNavigationListClass extends React.Component<ComponentProps, {}> {
+class AppPageNavigationListClass extends React.Component<ComponentProps> {
     public render(): React.ReactNode {
         return (
             <AppPageStyledPageNavigationList>

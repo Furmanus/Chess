@@ -7,7 +7,7 @@ import {AppPageUserListContainer} from './users/AppPageUsersListContainer';
 import {AppSettingsListContainer} from './settings/AppPageSettingsContainer';
 import {AppPageGameBoardContainer} from './game_board/AppPageGameBoardContainer';
 
-export class AppPageMainSection extends React.Component<{}, {}> {
+export class AppPageMainSection extends React.Component {
     public render(): React.ReactNode {
         return (
             <AppPageStyledMainSectionWrapper>

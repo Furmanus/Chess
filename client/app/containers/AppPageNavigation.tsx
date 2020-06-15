@@ -4,7 +4,7 @@ import {FaChessKnight} from 'react-icons/fa';
 import {AppPageStyledPageNavigationHeading} from '../styled/AppPageStyledPageNavigationHeading';
 import {AppPageNavigationList} from '../components/AppPageNavigationList';
 
-export class AppPageNavigation extends React.Component<{}, {}> {
+export class AppPageNavigation extends React.Component {
     public render(): React.ReactNode {
         return (
             <AppPageStyledPageNavigationContainer>

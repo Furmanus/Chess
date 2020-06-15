@@ -29,7 +29,10 @@ import {
     LoggedUsersClient,
     UserData,
 } from '../../../common/interfaces/game_interfaces';
-import {GameTableFields, UserTableFields} from '../../../server/enums/database';
+import {
+    GameTableFields,
+    UserTableFields,
+} from '../../../server/enums/database';
 import {GamesFilter} from '../constants/app_games';
 
 export interface AppStore {
@@ -64,6 +67,10 @@ const initialState: AppStore = {
 
 export function appReducer(state = initialState, action: AppActionTypes): AppStore {
     let gamesCopy;
+    let activeUsersCopy;
+    let userListJoinCopy;
+    let userListRemoveCopy;
+    let returnedState;
 
     switch (action.type) {
         case APP_LOGOUT:
@@ -73,12 +80,9 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 isCreatingGame: true,
             };
         case APP_CREATE_GAME_SUCCESS:
-            const {
-                createdGame,
-            } = action;
             gamesCopy = Array.from(state.games);
 
-            gamesCopy.push(createdGame);
+            gamesCopy.push(action.createdGame);
 
             return {
                 ...state,
@@ -112,13 +116,9 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 isFetchingSettings: true,
             };
         case APP_FETCH_USER_SETTINGS_SUCCESS:
-            const {
-                id,
-                login,
-            } = action.userSettings;
-            const activeUsersCopy = {...state.activeUsers};
+            activeUsersCopy = {...state.activeUsers};
 
-            activeUsersCopy[id] = login;
+            activeUsersCopy[action.userSettings.id] = action.userSettings.login;
 
             return {
                 ...state,
@@ -148,7 +148,7 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 isFetchingUsers: false,
             };
         case APP_USER_JOINED:
-            const userListJoinCopy = {
+            userListJoinCopy = {
                 ...state.activeUsers,
                 [action.user[UserTableFields.ID]]: action.user[UserTableFields.LOGIN],
             };
@@ -158,9 +158,9 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 activeUsers: userListJoinCopy,
             };
         case APP_USER_DISCONNECTED:
-            const userListRemoveCopy = {...state.activeUsers};
+            userListRemoveCopy = {...state.activeUsers};
             // TODO think how to solve it better
-            delete userListRemoveCopy[action.userId as any];
+            delete userListRemoveCopy[action.userId as unknown as number];
 
             return {
                 ...state,
@@ -177,28 +177,24 @@ export function appReducer(state = initialState, action: AppActionTypes): AppSto
                 hasJoinToGameProcessStarted: true,
             };
         case APP_GAME_DATA_CHANGED:
-            const {
-                updatedGame,
-                move,
-            } = action;
             gamesCopy = Array.from(state.games);
-            const returnedState = {
+            returnedState = {
                 ...state,
             };
 
             gamesCopy.forEach((game, index) => {
-                if (game[GameTableFields.ID] === updatedGame[GameTableFields.ID]) {
-                    gamesCopy[index] = updatedGame;
+                if (game[GameTableFields.ID] === action.updatedGame[GameTableFields.ID]) {
+                    gamesCopy[index] = action.updatedGame;
                 }
             });
 
             returnedState.games = gamesCopy;
 
-            if (state.activeGame?.[GameTableFields.ID] === updatedGame[GameTableFields.ID]) {
-                returnedState.activeGame = updatedGame;
+            if (state.activeGame?.[GameTableFields.ID] === action.updatedGame[GameTableFields.ID]) {
+                returnedState.activeGame = action.updatedGame;
             }
-            if (move) {
-                returnedState.lastMove = move;
+            if (action.move) {
+                returnedState.lastMove = action.move;
             }
 
             return returnedState;

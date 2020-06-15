@@ -154,7 +154,7 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
         );
     }
     @boundMethod
-    private onFormSubmit(e: SyntheticEvent): void {
+    private onFormSubmit(e: SyntheticEvent): Promise<void> {
         const {
             changeFormError,
         } = this.props;
@@ -174,7 +174,7 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
 
         changeFormError(null);
 
-        this.submitForm({
+        return this.submitForm({
             login,
             password,
             repeatedPassword,

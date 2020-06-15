@@ -152,7 +152,8 @@ class DatabaseHelperClass {
             },
             include: ['player1', 'player2'],
         });
-
+        // TODO fix typing and remove eslint disable
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return userGames.map((game: any) => {
             return {
                 ...prepareGameDataValues(game.dataValues),
@@ -172,7 +173,8 @@ class DatabaseHelperClass {
             },
             include: ['player1', 'player2'],
         });
-
+        // TODO fix typing and remove eslint disable
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return userGames.map((game: any) => ({
             ...prepareGameDataValues(game.dataValues),
             player1Name: game.player1?.dataValues?.login,

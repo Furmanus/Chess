@@ -15,7 +15,7 @@ interface AppButtonProps {
     disabled?: boolean;
 }
 
-export class AppButton extends React.Component<AppButtonProps, {}> {
+export class AppButton extends React.Component<AppButtonProps> {
     public static defaultProps: Partial<AppButtonProps> = {
         onClick: noop,
         disabled: false,

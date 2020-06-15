@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {Request, Response} from 'express';
+import {Response} from 'express';
 import {CustomRequest} from '../interfaces/express_types';
 import {databaseHelper} from '../utils/database';
 import {compareString} from '../utils/crypto';

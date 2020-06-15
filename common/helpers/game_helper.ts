@@ -1,4 +1,4 @@
-import {Coordinates, Figure, GameTableType} from '../interfaces/game_interfaces';
+import {Coordinates, GameTableType} from '../interfaces/game_interfaces';
 import {FigureFactory} from '../factory/figure_factory';
 import {ChessFigure} from '../models/chess_figure';
 

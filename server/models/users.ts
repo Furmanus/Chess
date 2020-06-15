@@ -1,6 +1,5 @@
 import {Sequelize, DataTypes, Model, BuildOptions} from 'sequelize';
 import {DatabaseFieldsLengths} from '../enums/database';
-import {Game} from './games';
 
 export interface UserModel {
     readonly id: number;
@@ -9,7 +8,7 @@ export interface UserModel {
 }
 
 export type UserModelStatic = typeof Model & {
-    new (values?: object, options?: BuildOptions): UserModel;
+    new (values?: Record<string, unknown>, options?: BuildOptions): UserModel;
 }
 
 let User: UserModelStatic;

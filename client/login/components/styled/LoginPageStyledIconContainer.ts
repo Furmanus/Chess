@@ -1,7 +1,7 @@
 import styled, {ThemedStyledProps} from 'styled-components';
 import {ITheme} from '../../../common/theme/theme';
 
-type ThemedProps = ThemedStyledProps<{}, ITheme>;
+type ThemedProps = ThemedStyledProps<void, ITheme>;
 
 export const LoginPageStyledIconContainer = styled.div`
     display: flex;

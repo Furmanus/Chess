@@ -12,7 +12,7 @@ interface AppSelectProps {
     readonly disabled?: boolean;
 }
 
-export class AppSelect extends React.Component<AppSelectProps, {}> {
+export class AppSelect extends React.Component<AppSelectProps> {
     public static defaultProps: Partial<AppSelectProps> = {
         defaultValue: '',
         options: [],

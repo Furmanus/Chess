@@ -83,7 +83,7 @@ function getCursor(props: ThemedProps): string {
     return 'pointer';
 }
 
-function getStylesCssText(props: ThemedProps, isHistoryLink: boolean = false): string {
+function getStylesCssText(props: ThemedProps, isHistoryLink = false): string {
     return `
         width: ${props.width ? `${props.width}px` : '100%'};
         height: ${props.height ? `${props.height}px` : '56px'};

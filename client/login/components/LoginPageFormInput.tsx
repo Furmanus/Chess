@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ChangeEvent} from 'react';
 import {LoginPageStyledFormInputContainer} from './styled/LoginPageStyledFormInputContainer';
+import {noop} from '../../common/utils/utils';
 
 interface ILoginPageFormInputProps {
     id: string;
@@ -21,9 +22,9 @@ export class LoginPageFormInput extends React.Component<ILoginPageFormInputProps
         name: '',
         hasError: false,
         isFocused: false,
-        onChange: () => {},
-        onFocus: () => {},
-        onBlur: () => {},
+        onChange: noop,
+        onFocus: noop,
+        onBlur: noop,
     };
     public render(): React.ReactNode {
         const {

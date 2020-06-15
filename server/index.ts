@@ -17,7 +17,7 @@ import {sockerHelper} from './helpers/socket_helper';
 const app = express();
 const server = http.createServer(app);
 const httpPort = process.env.NODE_ENV === 'development' ? 3000 : 80;
-const httpsPort = process.env.NODE_ENV === 'production' ? 3001 : 443;
+// const httpsPort = process.env.NODE_ENV === 'production' ? 3001 : 443;
 const MySqlStore =  expressMySqlSession(expressSession);
 const sessionStore = new MySqlStore({
     host: process.env.DATABASE_HOSTNAME,

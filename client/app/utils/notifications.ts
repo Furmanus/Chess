@@ -1,4 +1,3 @@
-// @ts-ignore
 import {store as notificationsStore} from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
 import 'animate.css';

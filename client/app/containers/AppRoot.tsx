@@ -2,17 +2,16 @@ import * as React from 'react';
 import {createGlobalStyle, ThemeProvider} from 'styled-components';
 import {AppPage} from './AppPage';
 import {theme} from '../../common/theme/theme';
-// @ts-ignore
 import ReactNotification from 'react-notifications-component';
 import {Provider} from 'react-redux';
-import {applyMiddleware, createStore} from 'redux';
+import {applyMiddleware, createStore, Middleware} from 'redux';
 import {appReducer} from '../reducers/app_reducer';
 import thunk from 'redux-thunk';
 import {BrowserRouter} from 'react-router-dom';
 import {logger} from 'redux-logger';
 import {socketManager} from '../utils/socket';
 
-const middlewares: any[] = [thunk];
+const middlewares: Middleware[] = [thunk];
 
 if (process.env.NODE_ENV === 'development') {
     middlewares.push(logger);
@@ -43,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-export class AppRoot extends React.Component<{}, {}> {
+export class AppRoot extends React.Component {
     public render(): React.ReactNode {
         return (
             <Provider store={store}>

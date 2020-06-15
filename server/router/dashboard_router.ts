@@ -122,14 +122,14 @@ async function joinGameRequestHandler(req: CustomRequest<{gameId: number}>, res:
         res.status(500).end();
     }
 }
-async function dashboardGameBoardHandler(req: CustomRequest<{}, {gameId: string}>, res: Response): Promise<void> {
+async function dashboardGameBoardHandler(req: CustomRequest<void, {gameId: string}>, res: Response): Promise<void> {
     if (req.session.user) {
         res.render('app');
     } else {
         res.redirect('/login');
     }
 }
-async function getGameDataHandler(req: CustomRequest<{}, {gameId: string}>, res: Response): Promise<void> {
+async function getGameDataHandler(req: CustomRequest<void, {gameId: string}>, res: Response): Promise<void> {
     const userId = req.session.user;
     const gameId = Number(req?.params?.gameId);
 

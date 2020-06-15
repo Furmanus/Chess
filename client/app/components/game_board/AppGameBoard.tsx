@@ -52,7 +52,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
     public componentDidMount(): void {
         this.initialize();
     }
-    public componentDidUpdate(prevProps: Readonly<AppGameBoardProps>) {
+    public componentDidUpdate(prevProps: Readonly<AppGameBoardProps>): void {
         const {
             gameData,
             userData,
@@ -74,7 +74,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
 
         if (lastMove !== prevProps.lastMove) {
             const d = this.gameTable.moveFigure(getCoordinatesFromString(lastMove.from), getCoordinatesFromString(lastMove.to));
-
+            // TODO find out what went wrong
         }
     }
     public componentWillUnmount(): void {
@@ -92,8 +92,10 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         }
     }
     private attachEvents(): void {
+        // PLACEHOLDER
     }
     private detachEvents(): void {
+        // PLACEHOLDER
     }
     private renderRows(): React.ReactNode[] {
         const rows = [];

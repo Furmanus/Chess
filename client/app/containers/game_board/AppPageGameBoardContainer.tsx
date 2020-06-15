@@ -53,7 +53,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ComponentProps = PropsFromRedux & RouteComponentProps<MatchParams>;
 
-class AppPageGameBoardClass extends React.Component<ComponentProps, {}> {
+class AppPageGameBoardClass extends React.Component<ComponentProps> {
     public render(): React.ReactNode {
         const {
             isFetchingActiveGameData,

@@ -6,13 +6,13 @@ export interface GameModel {
     player1_id: number;
     player2_id: number;
     active_player: number;
-    game_data: object;
-    moves: object;
+    game_data: Record<string, unknown>;
+    moves: Record<string, unknown>;
     game_state: GameStates;
     victorious_player_id: number;
 }
 export type GameModelStatic = typeof Model & {
-    new (values?: object, options?: BuildOptions): GameModel;
+    new (values?: Record<string, unknown>, options?: BuildOptions): GameModel;
 };
 
 let Game: GameModelStatic;

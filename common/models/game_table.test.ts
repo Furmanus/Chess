@@ -163,10 +163,10 @@ describe('Game table model class', () => {
         it ('should calculate correctly possible moves for black pawn after movement', () => {
             const pawnPosition = {x: 1, y: 1};
             const pawnFigure = gameTable.getFigureFromCoords(pawnPosition.x, pawnPosition.y);
-            let pawnPossibleMovesAfterMovement;
 
             gameTable.moveFigure(pawnPosition, {x: 1, y: 2});
-            pawnPossibleMovesAfterMovement = gameTable.calculatePossibleMoves(pawnFigure, {x: 1, y: 2});
+
+            const pawnPossibleMovesAfterMovement = gameTable.calculatePossibleMoves(pawnFigure, {x: 1, y: 2});
 
             expect(pawnPossibleMovesAfterMovement).toEqual([{x: 1, y: 3}, {x: 2, y: 3}]);
         });

@@ -29,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
 
 const store = createStore(loginPageReducer);
 
-export class LoginRoot extends React.Component<{}, {}> {
+export class LoginRoot extends React.Component {
     public render(): React.ReactNode {
         return (
             <Provider store={store}>

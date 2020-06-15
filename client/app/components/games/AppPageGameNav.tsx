@@ -21,7 +21,7 @@ const selectOptions = Object.keys(selectValueToLabelMap).map((key: GamesFilter) 
     label: selectValueToLabelMap[key],
 }));
 
-export class AppPageGameNav extends React.Component<AppPageGameNavProps, {}> {
+export class AppPageGameNav extends React.Component<AppPageGameNavProps> {
     public render(): React.ReactNode {
         const {
             onCreateGameClick,

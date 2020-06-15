@@ -17,7 +17,7 @@ interface AppPageBrickProps {
     onButtonClick: (game: GameDataWithPlayerNames) => void;
 }
 
-export class AppPageGameBrick extends React.Component<AppPageBrickProps, {}> {
+export class AppPageGameBrick extends React.Component<AppPageBrickProps> {
     public render(): React.ReactNode {
         const {
             disabled,
@@ -40,7 +40,7 @@ export class AppPageGameBrick extends React.Component<AppPageBrickProps, {}> {
         );
     }
     private renderPlayers(): React.ReactNode {
-        let {
+        const {
             player1Name,
             player2Name,
         } = this.props.data;

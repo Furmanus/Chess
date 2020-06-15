@@ -11,7 +11,7 @@ interface AppPageGameBrickButtonProps {
     isCurrentUserGame: boolean;
 }
 
-export class AppPageGameBrickButton extends React.Component<AppPageGameBrickButtonProps, {}> {
+export class AppPageGameBrickButton extends React.Component<AppPageGameBrickButtonProps> {
     public render(): React.ReactNode {
         const {
             gameId,

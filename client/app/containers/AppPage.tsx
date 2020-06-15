@@ -45,7 +45,7 @@ const connector = connect<AppPageStoreProps, AppPageDispatchProps>(mapStateToPro
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ComponentProps = PropsFromRedux;
 
-class AppPageClass extends React.Component<ComponentProps, {}> {
+class AppPageClass extends React.Component<ComponentProps> {
     public render(): React.ReactNode {
         const {
             isFetchingUserSettings,

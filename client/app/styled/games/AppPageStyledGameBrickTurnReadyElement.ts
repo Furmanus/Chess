@@ -1,7 +1,7 @@
 import styled, {keyframes, ThemedStyledProps} from 'styled-components';
 import {ITheme} from '../../../common/theme/theme';
 
-type ThemedProps = ThemedStyledProps<{}, ITheme>;
+type ThemedProps = ThemedStyledProps<void, ITheme>;
 
 const animation = keyframes`
     from {
