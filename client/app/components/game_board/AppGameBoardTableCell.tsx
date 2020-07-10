@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SyntheticEvent} from 'react';
+import {Ref, SyntheticEvent} from 'react';
 import {AppPageStyledGameBoardCell} from '../../styled/game_board/AppPageStyledGameBoardCell';
 import {converNumberToAlphabetLetter} from '../../utils/utils';
 import {
@@ -59,6 +59,7 @@ function getFigureImage(figure: ChessPieces, color: PlayerColors): string {
 }
 
 interface AppGameBoardTableCellProps {
+    innerRef?: React.RefObject<HTMLTableCellElement>
     row: number;
     column: number;
     figure?: ChessPieces;
@@ -69,7 +70,7 @@ interface AppGameBoardTableCellProps {
     onDragStart: (e: SyntheticEvent) => void;
 }
 
-export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCellProps> {
+class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellProps> {
     public render(): React.ReactNode {
         const {
             figure,
@@ -77,12 +78,11 @@ export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCell
             highlighted,
             selected,
             onDragStart,
+            innerRef,
         } = this.props;
         const figureImage = getFigureImage(figure, color);
         const coordsDataAttributes = this.getDataCoorAttributeValue();
-        if (figure === ChessPieces.KING && color === PlayerColors.BLACK) {
-            console.log(this.props);
-        }
+
         return (
             <AppPageStyledGameBoardCell
                 hasLightBackground={this.hasLightBackground()}
@@ -91,6 +91,7 @@ export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCell
                 highlighted={highlighted}
                 selected={selected}
                 onClick={this.onCellClick}
+                ref={innerRef}
             >
                 {
                     color && figure && (
@@ -150,3 +151,10 @@ export class AppGameBoardTableCell extends React.Component<AppGameBoardTableCell
         onCellClick({x: column, y: row});
     }
 }
+
+export const AppGameBoardTableCell = React.forwardRef((props: AppGameBoardTableCellProps, ref: Ref<HTMLTableCellElement>) => (
+    <AppGameBoardTableCellClass
+        {...props}
+        innerRef={ref as React.RefObject<HTMLTableCellElement>}
+    />
+));

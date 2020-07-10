@@ -22,9 +22,13 @@ interface AppGameBoardProps {
 interface AppGameBoardState {
     highlightedCells: string[];
 }
+interface AppGameBoardRefs {
+    [coord: string]: React.RefObject<HTMLTableCellElement>;
+}
 
 export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoardState> {
     private gameTable: GameTable;
+    private cellRefs: AppGameBoardRefs = {};
     private draggedElement: HTMLElement = null;
     private selectedCell: Coordinates = null;
 
@@ -73,8 +77,8 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         }
 
         if (lastMove !== prevProps.lastMove) {
-            const d = this.gameTable.moveFigure(getCoordinatesFromString(lastMove.from), getCoordinatesFromString(lastMove.to));
-            // TODO find out what went wrong
+            this.gameTable.moveFigure(getCoordinatesFromString(lastMove.from), getCoordinatesFromString(lastMove.to));
+            this.forceUpdate();
         }
     }
     public componentWillUnmount(): void {
@@ -118,6 +122,9 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         for (let i = 0; i < APP_GAMEBOARD_COLUMNS; i++) {
             const figure = this.gameTable.getFigureFromCoords(i, row);
             const cell = `${i}x${row}`;
+            const ref = React.createRef<HTMLTableCellElement>();
+
+            this.cellRefs[`${i}x${row}`] = ref;
 
             cells.push(
                 <AppGameBoardTableCell
@@ -130,6 +137,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
                     highlighted={this.state.highlightedCells.includes(cell)}
                     onDragStart={this.onDragStart}
                     onCellClick={this.onCellClick}
+                    ref={ref}
                 />
             );
         }
