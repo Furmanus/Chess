@@ -56,7 +56,7 @@ function getBoxShadowProperty(props: ThemedProps): string {
 }
 
 export const AppPageStyledGameBoardCell = styled.td<GameBoardCellProps>`
-    position: relative;
+    position: static;
     width: ${APP_GAMEBOARD_CELL_SIZE}px;
     height: ${APP_GAMEBOARD_CELL_SIZE}px;
     vertical-align: middle;

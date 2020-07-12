@@ -9,7 +9,7 @@ import {AppGameBoardTableCell} from './AppGameBoardTableCell';
 import {AppPageStyledGameBoardTable} from '../../styled/game_board/AppPageStyledGameBoardTable';
 import {PlayerColors} from '../../../../common/helpers/game_helper';
 import {boundMethod} from 'autobind-decorator';
-import {mapFiguresToCoords} from '../../utils/gameboard';
+import {createAnimation, mapFiguresToCoords} from '../../utils/gameboard';
 import {socketManager} from '../../utils/socket';
 import {getCoordinatesFromString} from '../../../../common/utils/utils';
 
@@ -56,7 +56,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
     public componentDidMount(): void {
         this.initialize();
     }
-    public componentDidUpdate(prevProps: Readonly<AppGameBoardProps>): void {
+    public async componentDidUpdate(prevProps: Readonly<AppGameBoardProps>): Promise<void> {
         const {
             gameData,
             userData,
@@ -76,8 +76,11 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
             this.calculateCellsToHighlight();
         }
 
-        if (lastMove !== prevProps.lastMove) {
+        if (lastMove?.from !== prevProps.lastMove?.from && lastMove?.to !== prevProps.lastMove?.to) {
             this.gameTable.moveFigure(getCoordinatesFromString(lastMove.from), getCoordinatesFromString(lastMove.to));
+
+            await this.animateFigure(lastMove.from, lastMove.to);
+
             this.forceUpdate();
         }
     }
@@ -143,6 +146,12 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         }
 
         return cells;
+    }
+    private async animateFigure(from: string, to: string): Promise<void> {
+        const fromCell = this.cellRefs[from].current;
+        const toCell = this.cellRefs[to].current;
+
+        return createAnimation(fromCell, toCell);
     }
     private calculateCellsToHighlight(): void {
         const {
