@@ -3,7 +3,7 @@ import {ChessFigure} from '../../../common/models/chess_figure';
 export function mapFiguresToCoords(figures: ChessFigure[]): string[] {
     return figures.map((figure) => `${figure.position.x}x${figure.position.y}`);
 }
-export function createAnimation(source: HTMLTableCellElement, target: HTMLTableCellElement): Promise<void> {
+export function createAnimation(source: HTMLTableCellElement, target: HTMLTableCellElement, dist: number): Promise<void> {
     return new Promise((resolve) => {
         const image = source?.querySelector('img');
         const {
@@ -21,7 +21,7 @@ export function createAnimation(source: HTMLTableCellElement, target: HTMLTableC
             {transform: `translate(0, 0`},
             {transform: `translate(${diffX - Math.sign(diffX) * 16}px, ${diffY - Math.sign(diffY) * 16}px)`},
         ], {
-            duration: 150,
+            duration: 150 * dist,
         });
 
         imageAnimation?.addEventListener('finish', onAnimationFinish);

@@ -12,6 +12,7 @@ import {boundMethod} from 'autobind-decorator';
 import {createAnimation, mapFiguresToCoords} from '../../utils/gameboard';
 import {socketManager} from '../../utils/socket';
 import {getCoordinatesFromString} from '../../../../common/utils/utils';
+import {getDistance} from '../../utils/utils';
 
 interface AppGameBoardProps {
     gameData: GameDataWithPlayerNames;
@@ -150,8 +151,11 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
     private async animateFigure(from: string, to: string): Promise<void> {
         const fromCell = this.cellRefs[from].current;
         const toCell = this.cellRefs[to].current;
+        const fromCoords = getCoordinatesFromString(from);
+        const toCoords = getCoordinatesFromString(to);
+        const dist = getDistance(fromCoords, toCoords);
 
-        return createAnimation(fromCell, toCell);
+        return createAnimation(fromCell, toCell, dist);
     }
     private calculateCellsToHighlight(): void {
         const {
