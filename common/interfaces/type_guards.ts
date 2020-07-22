@@ -8,5 +8,5 @@ export function isFigure(figure: any): figure is ChessFigure {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
 export function isCoordinates(obj: any): obj is Coordinates {
-    return 'x' in obj && 'y' in obj;
+    return typeof obj === 'object' && 'x' in obj && 'y' in obj;
 }
