@@ -22,6 +22,7 @@ export function createAnimation(source: HTMLTableCellElement, target: HTMLTableC
             {transform: `translate(${diffX - Math.sign(diffX) * 16}px, ${diffY - Math.sign(diffY) * 16}px)`},
         ], {
             duration: 150 * dist,
+            easing: 'ease-in-out',
         });
 
         imageAnimation?.addEventListener('finish', onAnimationFinish);

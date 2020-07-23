@@ -31,5 +31,6 @@ export function getDistance(
     } else if (typeof x === 'number' && typeof y === 'number') {
         return Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2));
     }
+
     return NaN;
 }
