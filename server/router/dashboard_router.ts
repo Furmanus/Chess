@@ -36,7 +36,7 @@ function dashboardRequestHandler(req: CustomRequest, res: Response): void {
     if (req.session.user) {
         res.render('app');
     } else {
-        res.redirect('/login');
+        res.redirect(`/login?backUrl=${req.url}`);
     }
 }
 async function createGameRequestHandler(req: CustomRequest, res: Response): Promise<void> {

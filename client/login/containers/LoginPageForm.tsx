@@ -190,15 +190,17 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
             password,
             repeatedPassword,
         } = data;
+        const urlParams = new URLSearchParams(window.location.search);
+        const backUrl = urlParams.get('backUrl');
 
         if (mode === LoginPageStates.LOGIN) {
             if (login && password) {
                 try {
                     await sendLoginData(login, password);
 
-                    window.location.pathname = '/dashboard';
+                    window.location.pathname = backUrl ?? '/dashboard';
                 } catch (e) {
-                    changeFormError(e.response.data.errorCode);
+                    changeFormError(e.response?.data.errorCode);
                 }
             } else {
                 changeFormError(1004);
@@ -209,9 +211,9 @@ class LoginPageFormClass extends React.Component<ReduxProps, ILoginFormState> {
                     try {
                         await sendRegisterData(login, password, repeatedPassword);
 
-                        window.location.pathname = '/dashboard';
+                        window.location.pathname = backUrl ?? '/dashboard';
                     } catch (e) {
-                        changeFormError(e.response.data.errorCode);
+                        changeFormError(e.response?.data.errorCode);
                     }
                 } else {
                     changeFormError(1000);

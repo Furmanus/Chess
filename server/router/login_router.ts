@@ -18,8 +18,16 @@ interface RegisterRequestBodyType {
 const router: express.Router = express.Router();
 
 router.get('/login', (req: CustomRequest, res: Response) => {
+    const {
+        backUrl,
+    } = req.query;
+
     if (req.session.user) {
-        res.redirect('/dashboard');
+        if (backUrl) {
+            res.redirect(backUrl);
+        } else {
+            res.redirect('/dashboard');
+        }
     } else {
         res.render('login');
     }

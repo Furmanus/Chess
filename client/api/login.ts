@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-export function sendLoginData(user: string, password: string): Promise<unknown> {
+interface ILoginData {
+    backUrl?: string;
+}
+
+export function sendLoginData(user: string, password: string): Promise<ILoginData> {
     return axios.post('/login', {
         user,
         password,
     });
 }
-export function sendRegisterData(user: string, password: string, repeatedPassword: string): Promise<unknown> {
+export function sendRegisterData(user: string, password: string, repeatedPassword: string): Promise<ILoginData> {
     return axios.post('/register', {
         user,
         password,
