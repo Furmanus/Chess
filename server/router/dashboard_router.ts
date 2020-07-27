@@ -126,7 +126,7 @@ async function dashboardGameBoardHandler(req: CustomRequest<void, {gameId: strin
     if (req.session.user) {
         res.render('app');
     } else {
-        res.redirect('/login');
+        res.redirect(`/login?backUrl=${req.url}`);
     }
 }
 async function getGameDataHandler(req: CustomRequest<void, {gameId: string}>, res: Response): Promise<void> {
