@@ -1,15 +1,25 @@
 import * as React from 'react';
-import {SyntheticEvent} from 'react';
-import {Coordinates, GameDataWithPlayerNames, GameMove, UserData} from '../../../../common/interfaces/game_interfaces';
+import {
+    Coordinates,
+    GameDataWithPlayerNames,
+    GameMove,
+    UserData,
+} from '../../../../common/interfaces/game_interfaces';
 import {AppFullPageContainer} from '../../../common/styled/AppFullSizeContainer';
 import {GameTable} from '../../../../common/models/game_table';
 import {GameTableFields} from '../../../../server/enums/database';
-import {APP_GAMEBOARD_COLUMNS, APP_GAMEBOARD_ROWS,} from '../../constants/app_gameboard';
+import {
+    APP_GAMEBOARD_COLUMNS,
+    APP_GAMEBOARD_ROWS,
+} from '../../constants/app_gameboard';
 import {AppGameBoardTableCell} from './AppGameBoardTableCell';
 import {AppPageStyledGameBoardTable} from '../../styled/game_board/AppPageStyledGameBoardTable';
 import {PlayerColors} from '../../../../common/helpers/game_helper';
 import {boundMethod} from 'autobind-decorator';
-import {createAnimation, mapFiguresToCoords} from '../../utils/gameboard';
+import {
+    createAnimation,
+    mapFiguresToCoords,
+} from '../../utils/gameboard';
 import {socketManager} from '../../utils/socket';
 import {getCoordinatesFromString} from '../../../../common/utils/utils';
 import {getDistance} from '../../utils/utils';
@@ -22,6 +32,7 @@ interface AppGameBoardProps {
 }
 interface AppGameBoardState {
     highlightedCells: string[];
+    dropZones: string[];
 }
 interface AppGameBoardRefs {
     [coord: string]: React.RefObject<HTMLTableCellElement>;
@@ -29,19 +40,20 @@ interface AppGameBoardRefs {
 
 export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoardState> {
     private gameTable: GameTable;
-    private cellRefs: AppGameBoardRefs = {};
-    private draggedElement: HTMLElement = null;
+    private readonly cellRefs: AppGameBoardRefs = {};
+    private readonly boardRef = React.createRef<HTMLTableSectionElement>();
     private selectedCell: Coordinates = null;
 
     public state: AppGameBoardState = {
         highlightedCells: [],
+        dropZones: [],
     };
 
     public render(): React.ReactNode {
         return (
             <AppFullPageContainer>
                 <AppPageStyledGameBoardTable>
-                    <tbody>
+                    <tbody ref={this.boardRef}>
                         {this.renderRows()}
                     </tbody>
                 </AppPageStyledGameBoardTable>
@@ -93,6 +105,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
             gameData,
             userData,
         } = this.props;
+
         this.attachEvents();
 
         if (gameData[GameTableFields.ACTIVE_PLAYER] === userData.id) {
@@ -139,7 +152,9 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
                     figure={figure?.type}
                     selected={cell === selectedCoords}
                     highlighted={this.state.highlightedCells.includes(cell)}
-                    onDragStart={this.onDragStart}
+                    isDropZone={this.state.dropZones.includes(cell)}
+                    handleDrop={this.handleDrop}
+                    handleDragStart={this.handleDragStart}
                     onCellClick={this.onCellClick}
                     ref={ref}
                 />
@@ -165,6 +180,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         const highlightedCells = mapFiguresToCoords(figuresAbleToMove);
 
         this.setState({
+            dropZones: [],
             highlightedCells,
         });
     }
@@ -174,43 +190,70 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         });
 
     }
-    @boundMethod
-    private onCellClick(cell: Coordinates): void {
-        const isSelectedCellHighlighted = this.state.highlightedCells.includes(`${cell.x}x${cell.y}`);
+    private isCellHighlighted(cell: Coordinates): boolean {
+        const cellCoordsString = `${cell.x}x${cell.y}`;
+
+        return this.state.highlightedCells.includes(cellCoordsString);
+    }
+    private selectCell(cell: Coordinates): void {
+        if (!this.selectedCell && this.isCellHighlighted(cell)) {
+            const figure = this.gameTable.getFigureFromCoords(cell.x, cell.y);
+            const figureMoves = this.gameTable.getFigurePossibleMovesCoordsString(figure, cell);
+
+            if (figure) {
+                this.selectedCell = cell;
+
+                this.setState({
+                    highlightedCells: [...figureMoves, `${cell.x}x${cell.y}`],
+                    dropZones: figureMoves,
+                });
+            }
+        }
+    }
+    private unselectCell(cell: Coordinates): void {
+        if (this.selectedCell.x === cell.x && this.selectedCell.y === cell.y) {
+            this.selectedCell = null;
+
+            this.calculateCellsToHighlight();
+        }
+    }
+    private moveSelectedFigure(targetCell: Coordinates): void {
         const {
             userData,
             gameData,
         } = this.props;
 
+        this.resetHighlightedCells();
+
+        socketManager.emitPlayerMovedFigureInGame(userData.id, gameData[GameTableFields.ID], {
+            from: `${this.selectedCell.x}x${this.selectedCell.y}`,
+            to: `${targetCell.x}x${targetCell.y}`,
+        });
+
+        this.selectedCell = null;
+    }
+    @boundMethod
+    private onCellClick(cell: Coordinates): void {
+        const isSelectedCellHighlighted = this.isCellHighlighted(cell);
+
         if (!this.selectedCell && isSelectedCellHighlighted) {
-            const figure = this.gameTable.getFigureFromCoords(cell.x, cell.y);
-
-            if (figure) {
-                const highlightedCells = this.gameTable.calculatePossibleMoves(figure, cell).map((position) => {
-                    return `${position.x}x${position.y}`;
-                });
-
-                this.selectedCell = cell;
-                this.setState({
-                    highlightedCells,
-                });
-            }
+            this.selectCell(cell);
         } else if (this.selectedCell && this.selectedCell.x === cell.x && this.selectedCell.y === cell.y) {
-            this.calculateCellsToHighlight();
-            this.selectedCell = null;
+            this.unselectCell(cell);
         } else if (this.selectedCell && isSelectedCellHighlighted) {
-            this.resetHighlightedCells();
-
-            socketManager.emitPlayerMovedFigureInGame(userData.id, gameData[GameTableFields.ID], {
-                from: `${this.selectedCell.x}x${this.selectedCell.y}`,
-                to: `${cell.x}x${cell.y}`,
-            });
-
-            this.selectedCell = null;
+            this.moveSelectedFigure(cell);
         }
     }
     @boundMethod
-    private onDragStart(e: SyntheticEvent): void {
-        this.draggedElement = e.target as HTMLElement;
+    private handleDragStart(coords: Coordinates): void {
+        const selectedCell = this.selectedCell;
+
+        if (!selectedCell) {
+            this.selectCell(coords);
+        }
+    }
+    @boundMethod
+    private handleDrop(coords: Coordinates): void {
+        this.moveSelectedFigure(coords);
     }
 }

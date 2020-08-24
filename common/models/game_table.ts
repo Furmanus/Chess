@@ -114,6 +114,9 @@ export class GameTable {
 
         return result;
     }
+    public getFigurePossibleMovesCoordsString(figure: ChessFigure, position?: Coordinates): string[] {
+        return this.calculatePossibleMoves(figure, position).map((pos) => `${pos.x}x${pos.y}`);
+    }
     public moveFigure(figure: ChessFigure, newPosition: Coordinates): boolean;
     public moveFigure(figure: Coordinates, newPosition: Coordinates): boolean;
     public moveFigure(figure: ChessFigure | Coordinates, newPosition: Coordinates): boolean {

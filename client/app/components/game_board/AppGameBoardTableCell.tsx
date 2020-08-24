@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Ref, SyntheticEvent} from 'react';
+import {Ref, DragEvent} from 'react';
 import {AppPageStyledGameBoardCell} from '../../styled/game_board/AppPageStyledGameBoardCell';
 import {converNumberToAlphabetLetter} from '../../utils/utils';
 import {
@@ -66,8 +66,10 @@ interface AppGameBoardTableCellProps {
     color?: PlayerColors;
     highlighted?: boolean;
     selected?: boolean;
+    isDropZone?: boolean;
     onCellClick: (cell: Coordinates) => void;
-    onDragStart: (e: SyntheticEvent) => void;
+    handleDragStart: (coords: Coordinates) => void;
+    handleDrop: (coords: Coordinates) => void;
 }
 
 class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellProps> {
@@ -77,8 +79,8 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
             color,
             highlighted,
             selected,
-            onDragStart,
             innerRef,
+            isDropZone,
         } = this.props;
         const figureImage = getFigureImage(figure, color);
         const coordsDataAttributes = this.getDataCoorAttributeValue();
@@ -91,6 +93,8 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
                 highlighted={highlighted}
                 selected={selected}
                 onClick={this.onCellClick}
+                onDragOver={isDropZone ? this.onDragOver : undefined}
+                onDrop={isDropZone ? this.onDrop : undefined}
                 ref={innerRef}
             >
                 {
@@ -98,8 +102,8 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
                         <img
                             src={figureImage}
                             alt={`${color} ${figure}`}
-                            draggable={false}
-                            onMouseDown={onDragStart}
+                            draggable={highlighted}
+                            onDragStart={this.onDragStart}
                         />
                     )
                 }
@@ -149,6 +153,29 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
         } = this.props;
 
         onCellClick({x: column, y: row});
+    }
+    @boundMethod
+    private onDragStart(): void {
+        const {
+            column,
+            row,
+            handleDragStart,
+        } = this.props;
+
+        handleDragStart({x: column, y: row});
+    }
+    private onDragOver(ev: DragEvent): void {
+        ev.preventDefault();
+    }
+    @boundMethod
+    private onDrop(): void {
+        const {
+            handleDrop,
+            row,
+            column,
+        } = this.props;
+
+        handleDrop({x: column, y: row});
     }
 }
 
