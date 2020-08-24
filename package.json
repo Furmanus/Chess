@@ -9,7 +9,8 @@
     "build-server:dev": "tsc ./server/index.ts -outDir build --watch",
     "build-client:dev": "webpack --config webpack.config.js --env.mode=development --env.watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "type-check": "tsc --noEmit"
   },
   "author": "Łukasz Lach",
   "license": "ISC",
