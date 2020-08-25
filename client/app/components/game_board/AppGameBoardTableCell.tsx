@@ -70,6 +70,7 @@ interface AppGameBoardTableCellProps {
     onCellClick: (cell: Coordinates) => void;
     handleDragStart: (coords: Coordinates) => void;
     handleDrop: (coords: Coordinates) => void;
+    handleDragEnd: (coords: Coordinates) => void;
 }
 
 class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellProps> {
@@ -95,6 +96,7 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
                 onClick={this.onCellClick}
                 onDragOver={isDropZone ? this.onDragOver : undefined}
                 onDrop={isDropZone ? this.onDrop : undefined}
+                onDragEnd={isDropZone ? undefined : this.onDragEnd}
                 ref={innerRef}
             >
                 {
@@ -176,6 +178,16 @@ class AppGameBoardTableCellClass extends React.Component<AppGameBoardTableCellPr
         } = this.props;
 
         handleDrop({x: column, y: row});
+    }
+    @boundMethod
+    private onDragEnd(): void {
+        const {
+            handleDragEnd,
+            row,
+            column,
+        } = this.props;
+
+        handleDragEnd({x: column, y: row});
     }
 }
 

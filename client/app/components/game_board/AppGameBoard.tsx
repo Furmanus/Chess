@@ -155,6 +155,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
                     isDropZone={this.state.dropZones.includes(cell)}
                     handleDrop={this.handleDrop}
                     handleDragStart={this.handleDragStart}
+                    handleDragEnd={this.handleDragEnd}
                     onCellClick={this.onCellClick}
                     ref={ref}
                 />
@@ -211,7 +212,7 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
         }
     }
     private unselectCell(cell: Coordinates): void {
-        if (this.selectedCell.x === cell.x && this.selectedCell.y === cell.y) {
+        if (this.selectedCell && this.selectedCell.x === cell.x && this.selectedCell.y === cell.y) {
             this.selectedCell = null;
 
             this.calculateCellsToHighlight();
@@ -255,5 +256,9 @@ export class AppGameBoard extends React.Component<AppGameBoardProps, AppGameBoar
     @boundMethod
     private handleDrop(coords: Coordinates): void {
         this.moveSelectedFigure(coords);
+    }
+    @boundMethod
+    private handleDragEnd(coords: Coordinates): void {
+        this.unselectCell(coords);
     }
 }
